@@ -1,0 +1,44 @@
+import {
+  getNewestsQuizzes,
+  getQuiz,
+  getQuizResult,
+  getUserQuizzes,
+} from '@/services/quizzService'
+import {
+  keepPreviousData,
+  useInfiniteQuery,
+  useQuery,
+} from '@tanstack/react-query'
+
+export const useInfinityQuizzes = () => {
+  return useInfiniteQuery({
+    queryKey: ['quizzes'],
+    queryFn: getNewestsQuizzes,
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
+  })
+}
+
+export const useUserQuizzes = (offset: number, limit: number) => {
+  return useQuery({
+    queryKey: ['user_quizzes', offset],
+    queryFn: () => getUserQuizzes(offset, limit),
+    placeholderData: keepPreviousData,
+  })
+}
+
+export const useQuiz = (id: string) => {
+  return useQuery({
+    queryKey: ['quiz', id],
+    queryFn: () => getQuiz(id),
+    enabled: !!id,
+  })
+}
+
+export const useQuizResult = (id: string) => {
+  return useQuery({
+    queryKey: ['quiz_result', id],
+    queryFn: () => getQuizResult(id),
+    enabled: !!id,
+  })
+}
