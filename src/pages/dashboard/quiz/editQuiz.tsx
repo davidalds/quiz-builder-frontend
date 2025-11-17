@@ -1,26 +1,336 @@
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
   DialogClose,
-  DialogContent,
   DialogFooter,
   DialogHeader,
+  DialogTitle,
 } from '@/components/ui/dialog'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import LoadingComponent from '@/components/ui/loadingComponent'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Separator } from '@/components/ui/separator'
+import { Textarea } from '@/components/ui/textarea'
+import { useQuizByUser } from '@/hooks/quizzServiceHooks'
+import { editQuizSchema, type editQuizFormType } from '@/schemas/editQuizSchema'
+import type { quizSubmitEditType } from '@/types/quizzes'
+import { formattedDataQuiz } from '@/utils/formattedDataQuiz'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { PlusIcon, Trash } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { useFieldArray, useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
 
-function EditQuiz() {
+interface IProps {
+  quizId: string
+  submitQuiz: (quizId: number, data: quizSubmitEditType) => Promise<void>
+}
+
+type Entry<T> = {
+  [k in keyof T]: [k, T[k]]
+}[keyof T]
+
+const defaultQuestionValues: {
+  id: number
+  text: string
+  answers: {
+    id: number
+    text: ''
+    isCorrect: 'false' | 'true'
+  }[]
+} = {
+  id: 0,
+  text: '',
+  answers: [
+    { id: 0, text: '', isCorrect: 'false' },
+    { id: 0, text: '', isCorrect: 'false' },
+    { id: 0, text: '', isCorrect: 'false' },
+    { id: 0, text: '', isCorrect: 'false' },
+    { id: 0, text: '', isCorrect: 'false' },
+  ],
+}
+
+function EditQuiz({ quizId, submitQuiz }: IProps) {
+  const { data } = useQuizByUser(quizId)
+
+  const form = useForm<editQuizFormType>({
+    resolver: zodResolver(editQuizSchema),
+  })
+
+  const fieldErrors = form.formState.errors
+
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: 'questions',
+  })
+
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
+
+  const closeBtn = useRef<HTMLButtonElement>(null)
+  const submitBtn = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    if (data && form.getValues('questions').length === 0) {
+      const { title, description, questions } = data
+
+      const obj = {
+        title,
+        description,
+        questions,
+      }
+
+      const arr = Object.entries(obj) as Array<Entry<typeof obj>>
+
+      arr.map(([k, v]) => {
+        if (k === 'questions') {
+          v.map(({ id: qId, text: qText, answers }) =>
+            append({
+              id: qId,
+              text: qText,
+              answers: answers.map(({ id, text, isCorrect }) => ({
+                id,
+                text,
+                isCorrect: String(isCorrect) as 'false' | 'true',
+              })),
+            }),
+          )
+        } else {
+          form.setValue(k, v)
+        }
+      })
+    }
+  }, [data, form, append])
+
+  const verifyIfOnlyOneAnswerIsTrue = (
+    arr: editQuizFormType['questions'][number]['answers'],
+  ) => {
+    return arr.filter((b) => b.isCorrect === 'true').length === 1
+  }
+
+  const verifyQuestionsOptions = (questions: editQuizFormType['questions']) => {
+    return questions
+      .map(({ answers }) => verifyIfOnlyOneAnswerIsTrue(answers))
+      .some((v) => v === false)
+  }
+
+  const onSubmit = (data: editQuizFormType) => {
+    if (verifyQuestionsOptions(data.questions)) {
+      toast.error('Cada questão deve conter apenas UMA resposta correta!')
+      return
+    }
+    setIsSubmitting(true)
+
+    submitQuiz(+quizId, formattedDataQuiz(data))
+      .then(() => {
+        if (closeBtn) {
+          closeBtn.current?.click()
+          setIsSubmitting(false)
+        }
+      })
+      .catch(() => setIsSubmitting(false))
+  }
+
+  useEffect(() => {
+    if (fieldErrors.questions) {
+      toast.error(fieldErrors.questions.root?.message)
+    }
+  }, [fieldErrors])
+
   return (
-    <DialogContent>
-      <DialogHeader>Editar Quiz</DialogHeader>
+    <>
+      <DialogHeader>
+        <DialogTitle>Editar Quiz</DialogTitle>
+      </DialogHeader>
       <ScrollArea className="mt-3 max-h-100">
-        <div className="px-3"></div>
+        <div className="p-3">
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="flex flex-col gap-3"
+            >
+              <FormField
+                control={form.control}
+                defaultValue=""
+                name={'title'}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Título do Quiz</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Ex: Quiz de Geografia" {...field} />
+                    </FormControl>
+                    {fieldErrors.title ? (
+                      <FormMessage>{fieldErrors.title.message}</FormMessage>
+                    ) : (
+                      <></>
+                    )}
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                defaultValue=""
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Descrição do Quiz</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Ex: Quiz de geografia sobre as capitais..."
+                        {...field}
+                      />
+                    </FormControl>
+                    {fieldErrors.description ? (
+                      <FormMessage>
+                        {fieldErrors.description.message}
+                      </FormMessage>
+                    ) : (
+                      <></>
+                    )}
+                  </FormItem>
+                )}
+              />
+              <Separator />
+              <div className="flex justify-between items-center">
+                <span className="text-md font-medium">
+                  Cadastro de questões
+                </span>
+                <div>
+                  <Button
+                    type="button"
+                    size={'sm'}
+                    variant={'outline'}
+                    onClick={() => append(defaultQuestionValues)}
+                  >
+                    <PlusIcon />
+                    Adicionar
+                  </Button>
+                </div>
+              </div>
+              {fields.map(({ answers }, index) => (
+                <div className="flex flex-col gap-3 mt-2" key={index}>
+                  <div className="flex justify-between">
+                    <Badge>Questão {index + 1}</Badge>
+                    <Button
+                      size={'icon'}
+                      variant={'destructive'}
+                      onClick={() => remove(index)}
+                    >
+                      <Trash />
+                    </Button>
+                  </div>
+                  <FormField
+                    key={index}
+                    control={form.control}
+                    name={`questions.${index}.text`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Pergunta da Questão</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        {fieldErrors.questions?.length ? (
+                          <FormMessage>
+                            {fieldErrors.questions[index]?.text?.message}
+                          </FormMessage>
+                        ) : (
+                          <></>
+                        )}
+                      </FormItem>
+                    )}
+                  />
+                  {answers.map((_, index2) => (
+                    <div className="flex gap-2" key={index2}>
+                      <FormField
+                        control={form.control}
+                        name={`questions.${index}.answers.${index2}.text`}
+                        render={({ field }) => (
+                          <FormItem className="grow">
+                            <FormLabel>Título da Opção</FormLabel>
+                            <FormControl>
+                              <Input {...field} />
+                            </FormControl>
+                            {fieldErrors.questions?.length ? (
+                              fieldErrors.questions[index]?.answers?.length ? (
+                                <FormMessage>
+                                  {
+                                    fieldErrors.questions[index].answers[index2]
+                                      ?.text?.message
+                                  }
+                                </FormMessage>
+                              ) : (
+                                <></>
+                              )
+                            ) : (
+                              <></>
+                            )}
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name={`questions.${index}.answers.${index2}.isCorrect`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Opção Correta</FormLabel>
+                            <Select
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                            >
+                              <FormControl>
+                                <SelectTrigger className="w-[180px]">
+                                  <SelectValue placeholder="Marque a opção" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="false">Falsa</SelectItem>
+                                <SelectItem value="true">Verdadeira</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  ))}
+                </div>
+              ))}
+              <button type="submit" hidden ref={submitBtn}></button>
+            </form>
+          </Form>
+        </div>
       </ScrollArea>
       <DialogFooter>
         <DialogClose asChild>
-          <Button variant={'secondary'}>Cancelar</Button>
+          <Button variant={'secondary'} ref={closeBtn}>
+            Cancelar
+          </Button>
         </DialogClose>
-        <Button>Confirmar</Button>
+        <Button
+          disabled={isSubmitting}
+          onClick={() => {
+            if (submitBtn.current) {
+              submitBtn.current.click()
+            }
+          }}
+        >
+          {isSubmitting ? <LoadingComponent /> : 'Confirmar'}
+        </Button>
       </DialogFooter>
-    </DialogContent>
+    </>
   )
 }
 

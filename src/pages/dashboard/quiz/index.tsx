@@ -1,4 +1,4 @@
-import { Plus, Trash } from 'lucide-react'
+import { Pencil, Plus, Trash } from 'lucide-react'
 import CreateQuiz from './createQuiz'
 import {
   Table,
@@ -13,13 +13,14 @@ import { useUserQuizzes } from '@/hooks/quizzServiceHooks'
 import PaginationComponent from '../components/ui/paginationComponent'
 import { useState } from 'react'
 import { api } from '@/services'
-import type { quizSubmitType } from '@/types/quizzes'
+import type { quizSubmitEditType, quizSubmitType } from '@/types/quizzes'
 import { useQueryClient } from '@tanstack/react-query'
 import SkeletonContent from '@/components/ui/skeletonContent'
 import DialogComponent from '@/components/ui/dialogComponent'
 import ConfirmDialog from '@/components/ui/confirmDialog'
 import { toast } from 'react-toastify'
 import AlertComponent from '@/components/ui/alertComponent'
+import EditQuiz from './editQuiz'
 
 function QuizPageDashboard() {
   const limit = 15
@@ -40,6 +41,18 @@ function QuizPageDashboard() {
       return Promise.resolve()
     } catch (error) {
       toast.error('Ocorreu um erro ao criar quiz!')
+      return Promise.reject(error)
+    }
+  }
+
+  const handleEditQuiz = async (quizId: number, data: quizSubmitEditType) => {
+    try {
+      await api.put(`quizzes/${quizId}`, data)
+      queryClient.invalidateQueries({ queryKey: ['user_quizzes', quizId] })
+      toast.success('Quiz editado com sucesso!')
+      return Promise.resolve()
+    } catch (error) {
+      toast.error('Ocorreu um erro ao editar quiz!')
       return Promise.reject(error)
     }
   }
@@ -87,8 +100,8 @@ function QuizPageDashboard() {
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  {Array.from({ length: 2 }).map(() => (
-                    <TableCell>
+                  {Array.from({ length: 2 }).map((_, index) => (
+                    <TableCell key={index}>
                       <SkeletonContent numberLines={limit} lineH={4} />
                     </TableCell>
                   ))}
@@ -100,6 +113,16 @@ function QuizPageDashboard() {
                     <TableCell>{title}</TableCell>
                     <TableCell>
                       <div className="flex gap-2">
+                        <DialogComponent
+                          btnTriggerIcon={Pencil}
+                          btnTriggerText="Editar"
+                          btnVariant={'secondary'}
+                        >
+                          <EditQuiz
+                            quizId={String(quizId)}
+                            submitQuiz={handleEditQuiz}
+                          />
+                        </DialogComponent>
                         <DialogComponent
                           btnTriggerIcon={Trash}
                           btnTriggerText="Excluir"

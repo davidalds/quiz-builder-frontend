@@ -27,6 +27,20 @@ export type quizSubmitType = {
   }[]
 }
 
+export type quizSubmitEditType = {
+  title: string
+  description: string
+  questions: {
+    id?: number
+    text: string
+    answers: {
+      id?: number
+      text: string
+      isCorrect: boolean
+    }[]
+  }[]
+}
+
 // ##################################################
 
 export type responseNewestsQuizzes = {
@@ -58,6 +72,7 @@ export type questionTypeForm = {
 export type answerType = {
   id: number
   text: string
+  isCorrect?: boolean
 }
 
 export type questionType = {

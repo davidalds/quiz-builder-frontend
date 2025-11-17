@@ -1,6 +1,7 @@
 import {
   getNewestsQuizzes,
   getQuiz,
+  getQuizByUser,
   getQuizResult,
   getUserQuizzes,
 } from '@/services/quizzService'
@@ -31,6 +32,14 @@ export const useQuiz = (id: string) => {
   return useQuery({
     queryKey: ['quiz', id],
     queryFn: () => getQuiz(id),
+    enabled: !!id,
+  })
+}
+
+export const useQuizByUser = (id: string) => {
+  return useQuery({
+    queryKey: ['user-quiz', id],
+    queryFn: () => getQuizByUser(id),
     enabled: !!id,
   })
 }

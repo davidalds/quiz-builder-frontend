@@ -25,9 +25,11 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { DialogClose } from '@radix-ui/react-dialog'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { toast } from 'react-toastify'
 import type { quizSubmitType } from '@/types/quizzes'
+import { formattedDataQuiz } from '@/utils/formattedDataQuiz'
+import LoadingComponent from '@/components/ui/loadingComponent'
 
 interface IProps {
   submitQuiz: (data: quizSubmitType) => Promise<void>
@@ -61,6 +63,8 @@ function CreateQuiz({ submitQuiz }: IProps) {
     name: 'questions',
   })
 
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
+
   const closeBtn = useRef<HTMLButtonElement>(null)
   const submitBtn = useRef<HTMLButtonElement>(null)
 
@@ -76,32 +80,26 @@ function CreateQuiz({ submitQuiz }: IProps) {
       .some((v) => v === false)
   }
 
-  const formattedDataQuiz = (data: quizFormType): quizSubmitType => {
-    return {
-      ...data,
-      questions: data.questions.map((q) => ({
-        ...q,
-        answers: q.answers.map((a) => ({
-          ...a,
-          isCorrect: a.isCorrect === 'false' ? false : true,
-        })),
-      })),
-    }
-  }
-
   const onSubmit = (data: quizFormType) => {
     if (data) {
       if (verifyQuestionsOptions(data.questions)) {
         toast.error('Cada questão deve conter apenas UMA resposta correta!')
         return
       }
-      submitQuiz(formattedDataQuiz(data)).then(() => {
-        if (closeBtn) {
-          closeBtn.current?.click()
-        }
-        form.reset()
-        remove()
-      })
+      setIsSubmitting(true)
+
+      submitQuiz(formattedDataQuiz(data))
+        .then(() => {
+          if (closeBtn) {
+            closeBtn.current?.click()
+            setIsSubmitting(false)
+          }
+          form.reset()
+          remove()
+        })
+        .catch(() => {
+          setIsSubmitting(false)
+        })
     }
   }
 
@@ -280,13 +278,14 @@ function CreateQuiz({ submitQuiz }: IProps) {
           </Button>
         </DialogClose>
         <Button
+          disabled={isSubmitting}
           onClick={() => {
             if (submitBtn.current) {
               submitBtn.current.click()
             }
           }}
         >
-          Confirmar
+          {isSubmitting ? <LoadingComponent /> : 'Confirmar'}
         </Button>
       </DialogFooter>
     </>

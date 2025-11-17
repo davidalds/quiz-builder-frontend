@@ -43,3 +43,8 @@ export const getQuizResult = async (id: string): Promise<resultType> => {
   const { data } = await api.get(`quizzes/${id}/answers`)
   return data
 }
+
+export const getQuizByUser = async (id: string): Promise<responseQuiz> => {
+  const { data } = await api.get(`quizzes/user-quizzes/${id}`)
+  return data
+}

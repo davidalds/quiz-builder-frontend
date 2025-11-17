@@ -1,6 +1,6 @@
 import * as z from 'zod'
 
-export const quizSchema = z.object({
+export const editQuizSchema = z.object({
   title: z
     .string()
     .min(5, {
@@ -16,22 +16,22 @@ export const quizSchema = z.object({
   questions: z
     .array(
       z.object({
+        id: z.number(),
         text: z
           .string()
-          .min(5, {
-            error: 'Título da pergunta deve ter no mínimo 5 caracteres',
-          })
+          .min(5, { error: 'Texto da questão deve ter no mínimo 5 caracteres' })
           .trim(),
         answers: z
           .array(
             z.object({
+              id: z.number(),
               text: z
                 .string()
                 .min(1, {
                   error: 'Texto da resposta deve ter no mínimo 1 caractere',
                 })
                 .trim(),
-              isCorrect: z.literal(['false', 'true']),
+              isCorrect: z.enum(['false', 'true']),
             }),
           )
           .nonempty('A questão deve ter pelo menos uma opção de resposta'),
@@ -40,4 +40,4 @@ export const quizSchema = z.object({
     .nonempty('O quiz deve ter pelo menos uma questão'),
 })
 
-export type quizFormType = z.infer<typeof quizSchema>
+export type editQuizFormType = z.infer<typeof editQuizSchema>
