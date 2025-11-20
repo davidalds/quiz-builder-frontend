@@ -3,6 +3,7 @@ import { RouterProvider } from 'react-router'
 import { ToastContainer } from 'react-toastify'
 import router from './routes'
 import { useTheme } from './theme/useTheme'
+import AuthProvider from './auth/authProvider'
 
 const queryClient = new QueryClient()
 
@@ -11,12 +12,14 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-      <ToastContainer
-        position={'top-center'}
-        theme={theme.color}
-        closeOnClick={true}
-      />
+      <AuthProvider>
+        <RouterProvider router={router} />
+        <ToastContainer
+          position={'top-center'}
+          theme={theme.color}
+          closeOnClick={true}
+        />
+      </AuthProvider>
     </QueryClientProvider>
   )
 }

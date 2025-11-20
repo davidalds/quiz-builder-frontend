@@ -6,8 +6,14 @@ import DashboardLayout from './pages/dashboard/layout'
 import DashboardHome from './pages/dashboard/home'
 import QuizPageDashboard from './pages/dashboard/quiz'
 import ErrorBoundaryFallback from './components/ui/errorBoundaryFallback'
+import Login from './pages/login'
+import RequireAuth from './auth/requireAuth'
 
 const router = createBrowserRouter([
+  {
+    path: 'login',
+    Component: Login,
+  },
   {
     path: '/',
     Component: PublicLayout,
@@ -26,7 +32,11 @@ const router = createBrowserRouter([
   },
   {
     path: 'dashboard',
-    Component: DashboardLayout,
+    element: (
+      <RequireAuth>
+        <DashboardLayout />
+      </RequireAuth>
+    ),
     children: [
       {
         index: true,

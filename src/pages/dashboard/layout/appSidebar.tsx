@@ -1,3 +1,5 @@
+import { useAuth } from '@/auth/useAuth'
+import { Button } from '@/components/ui/button'
 import {
   Sidebar,
   SidebarContent,
@@ -37,6 +39,7 @@ const appLinks: appLinksType[] = [
 ]
 
 function AppSidebar() {
+  const auth = useAuth()
   const { pathname } = useLocation()
 
   const isActiveLink = (locationName: string) => {
@@ -90,7 +93,8 @@ function AppSidebar() {
       <SidebarFooter>
         <SidebarMenuItem>
           <SidebarMenuButton variant={'content'}>
-            Usuário Logado
+            Usuário: {auth.user.name}
+            <Button onClick={() => auth.signOut()}>Logout</Button>
           </SidebarMenuButton>
         </SidebarMenuItem>
       </SidebarFooter>
