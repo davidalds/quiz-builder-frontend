@@ -2,10 +2,7 @@ import Axios from 'axios'
 import Cookies from 'js-cookie'
 
 const api = Axios.create({
-  baseURL:
-    process.env.NODE_ENV === 'production'
-      ? 'https://quiz-builder-backend-production.up.railway.app/'
-      : 'http://localhost:8080/',
+  baseURL: import.meta.env.VITE_API_URL,
 })
 
 api.interceptors.request.use(
