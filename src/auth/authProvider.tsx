@@ -26,8 +26,6 @@ export default function AuthProvider({ children }: IProps) {
       email,
       password,
     })
-
-    console.log(access_token)
     Cookies.set('access_token', access_token)
     setIsLoggegIn(true)
     return access_token
