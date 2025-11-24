@@ -39,8 +39,13 @@ export const getQuiz = async (id: string): Promise<responseQuiz> => {
   return data
 }
 
-export const getQuizResult = async (id: string): Promise<resultType> => {
-  const { data } = await api.get(`quizzes/${id}/answers`)
+export const getQuizResult = async (
+  id: string,
+  guestId?: string,
+): Promise<resultType> => {
+  const { data } = await api.get(
+    `quizzes/${id}/answers?guestId=${guestId ?? ''}`,
+  )
   return data
 }
 

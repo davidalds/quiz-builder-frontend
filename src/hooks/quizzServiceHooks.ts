@@ -44,10 +44,10 @@ export const useQuizByUser = (id: string) => {
   })
 }
 
-export const useQuizResult = (id: string) => {
+export const useQuizResult = (id: string, guestId?: string) => {
   return useQuery({
     queryKey: ['quiz_result', id],
-    queryFn: () => getQuizResult(id),
+    queryFn: () => getQuizResult(id, guestId),
     enabled: !!id,
   })
 }

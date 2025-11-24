@@ -6,16 +6,26 @@ import AlertComponent from '@/components/ui/alertComponent'
 import type { sendAnswerType } from '@/types/quizzes'
 import { api } from '@/services'
 import { useQueryClient } from '@tanstack/react-query'
+import { v4 as uuidv4 } from 'uuid'
+import Cookies from 'js-cookie'
 
 function QuizPage() {
   const params = useParams()
+  let guestId = Cookies.get('guestId')
   const { data, isError, isLoading } = useQuiz(params.id!)
-  const { data: dataQuizResult } = useQuizResult(params.id!)
+  const { data: dataQuizResult } = useQuizResult(params.id!, guestId)
   const queryClient = useQueryClient()
 
   const submitAnswer = async (data: sendAnswerType[]): Promise<void> => {
     try {
-      await api.post(`quizzes/${params.id}/answers`, { userAnswers: data })
+      if (!guestId) {
+        guestId = Cookies.set('guestId', uuidv4(), { expires: 3650 })
+      }
+
+      await api.post(`quizzes/${params.id}/answers`, {
+        userAnswers: data,
+        guestId,
+      })
       queryClient.invalidateQueries({ queryKey: ['quiz_result', params.id] })
       return Promise.resolve()
     } catch (err) {

@@ -1,3 +1,5 @@
+import type { user } from './user'
+
 export type quiz = {
   id: number
   title: string
@@ -85,14 +87,17 @@ export type quizLabelType = {
   id: number
   title: string
   description?: string
-  created_by: string
+  User?: {
+    id: number
+    name: string
+  }
 }
 
 export type responseQuiz = {
   id: number
   title: string
   description: string
-  created_by: string
+  User: user
   questions: questionType[]
 }
 

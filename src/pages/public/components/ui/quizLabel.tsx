@@ -19,7 +19,7 @@ function QuizLabel({ quiz, isLoading }: IProps) {
           <p>{quiz!.description}</p>
           <p>
             <span className="font-medium mr-2">Criado por:</span>
-            User
+            {quiz?.User?.name ?? 'User'}
           </p>
         </>
       )}
