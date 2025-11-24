@@ -13,7 +13,6 @@ import { Link } from 'react-router'
 
 interface IProps {
   data: InfiniteData<responseQuizzes, unknown> | undefined
-  isLoading: boolean
   hasNextPage: boolean
   isFetchingNextPage: boolean
   fetchNextPage: () => void
@@ -21,40 +20,34 @@ interface IProps {
 
 function CardsHome({
   data,
-  isLoading,
   hasNextPage,
   isFetchingNextPage,
   fetchNextPage,
 }: IProps) {
   return (
     <>
-      {isLoading ? (
-        <div className="flex justify-center content-center">
-          <LoadingComponent />
-        </div>
-      ) : (
-        <div className="flex flex-wrap gap-4">
-          {data !== undefined ? (
-            data.pages.map((group) =>
-              group.data.map(({ id, title, description }) => (
-                <Card key={id} className="min-w-sm max-w-sm">
-                  <CardHeader className="grow">
-                    <CardTitle>{title}</CardTitle>
-                    <CardDescription>{description}</CardDescription>
-                  </CardHeader>
-                  <CardFooter className="justify-end">
-                    <Button asChild>
-                      <Link to={`quiz/${id}`}>Acessar</Link>
-                    </Button>
-                  </CardFooter>
-                </Card>
-              )),
-            )
-          ) : (
-            <></>
-          )}
-        </div>
-      )}
+      <div className="flex flex-wrap gap-4">
+        {data !== undefined ? (
+          data.pages.map((group) =>
+            group.data.map(({ id, title, description }) => (
+              <Card key={id} className="min-w-sm max-w-sm">
+                <CardHeader className="grow">
+                  <CardTitle>{title}</CardTitle>
+                  <CardDescription>{description}</CardDescription>
+                </CardHeader>
+                <CardFooter className="justify-end">
+                  <Button asChild>
+                    <Link to={`quiz/${id}`}>Acessar</Link>
+                  </Button>
+                </CardFooter>
+              </Card>
+            )),
+          )
+        ) : (
+          <></>
+        )}
+      </div>
+
       <div className="flex justify-center mt-4">
         {hasNextPage ? (
           isFetchingNextPage ? (

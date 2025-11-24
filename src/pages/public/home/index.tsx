@@ -2,6 +2,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import CardsHome from '../components/ui/cardsHome'
 import { useInfinityQuizzes } from '@/hooks/quizzServiceHooks'
 import AlertComponent from '@/components/ui/alertComponent'
+import LoadingComponent from '@/components/ui/loadingComponent'
 
 function PublicHome() {
   const {
@@ -21,21 +22,28 @@ function PublicHome() {
           <TabsTrigger value="hot">Mais Acessados</TabsTrigger>
         </TabsList>
         <TabsContent value="newests">
-          {isError ? (
+          {isLoading ? (
+            <div className="flex justify-center content-center">
+              <LoadingComponent />
+            </div>
+          ) : isError ? (
             <AlertComponent
               title="Não foi possível carregar quizzes!"
               alertType={'error'}
             >
               Ocorreu um erro ao carregar os quizzes!
             </AlertComponent>
-          ) : (
+          ) : data?.pages[0].total ? (
             <CardsHome
               data={data}
-              isLoading={isLoading}
               hasNextPage={hasNextPage}
               isFetchingNextPage={isFetchingNextPage}
               fetchNextPage={fetchNextPage}
             />
+          ) : (
+            <AlertComponent title="Nenhum quizz encontrado!" alertType={'info'}>
+              Não foi possível encontrar nenhum quizz.
+            </AlertComponent>
           )}
         </TabsContent>
         <TabsContent value="hot">
