@@ -1,12 +1,6 @@
 import { useRef } from 'react'
 import { Button } from './button'
-import {
-  DialogClose,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from './dialog'
+import { DialogClose, DialogFooter, DialogHeader, DialogTitle } from './dialog'
 
 interface IProps {
   title: string
@@ -17,7 +11,7 @@ export default function ConfirmDialog({ title, confirmCallback }: IProps) {
   const btnCloseRef = useRef<HTMLButtonElement>(null)
 
   return (
-    <DialogContent>
+    <>
       <DialogHeader>
         <DialogTitle>{title}</DialogTitle>
       </DialogHeader>
@@ -38,6 +32,6 @@ export default function ConfirmDialog({ title, confirmCallback }: IProps) {
           Confirmar
         </Button>
       </DialogFooter>
-    </DialogContent>
+    </>
   )
 }

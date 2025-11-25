@@ -48,6 +48,6 @@ export const useQuizResult = (id: string, guestId?: string) => {
   return useQuery({
     queryKey: ['quiz_result', id],
     queryFn: () => getQuizResult(id, guestId),
-    enabled: !!id,
+    enabled: !!id && !!guestId,
   })
 }

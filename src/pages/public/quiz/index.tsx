@@ -8,30 +8,48 @@ import { api } from '@/services'
 import { useQueryClient } from '@tanstack/react-query'
 import { v4 as uuidv4 } from 'uuid'
 import Cookies from 'js-cookie'
+import { useEffect, useState } from 'react'
 
 function QuizPage() {
   const params = useParams()
-  let guestId = Cookies.get('guestId')
+  const [guestId, setGuestId] = useState<string | undefined>()
   const { data, isError, isLoading } = useQuiz(params.id!)
   const { data: dataQuizResult } = useQuizResult(params.id!, guestId)
   const queryClient = useQueryClient()
 
+  const createGuestIdCookie = (uuid: string) => {
+    if (!getGuestIdCookie()) {
+      Cookies.set('guestId', uuid, { expires: 3650 })
+    }
+  }
+
+  const getGuestIdCookie = () => {
+    return Cookies.get('guestId')
+  }
+
   const submitAnswer = async (data: sendAnswerType[]): Promise<void> => {
     try {
-      if (!guestId) {
-        guestId = Cookies.set('guestId', uuidv4(), { expires: 3650 })
-      }
+      const newGuestId = getGuestIdCookie() ?? uuidv4()
+      createGuestIdCookie(newGuestId)
 
       await api.post(`quizzes/${params.id}/answers`, {
         userAnswers: data,
-        guestId,
+        guestId: newGuestId,
       })
+
+      setGuestId(newGuestId)
       queryClient.invalidateQueries({ queryKey: ['quiz_result', params.id] })
       return Promise.resolve()
     } catch (err) {
       return Promise.reject(err)
     }
   }
+
+  useEffect(() => {
+    if (getGuestIdCookie()) {
+      setGuestId(getGuestIdCookie())
+    }
+  }, [])
 
   return (
     <div className="flex flex-col flex-grow gap-2">

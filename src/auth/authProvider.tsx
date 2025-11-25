@@ -47,7 +47,6 @@ export default function AuthProvider({ children }: IProps) {
 
   const isAuthenticated = useCallback((): boolean => {
     const access_token = decodedToken()
-    console.log(access_token)
     if (access_token) {
       if (Date.now() <= access_token.exp * 1000) {
         return true
