@@ -9,6 +9,8 @@ import { useQueryClient } from '@tanstack/react-query'
 import { v4 as uuidv4 } from 'uuid'
 import Cookies from 'js-cookie'
 import { useEffect, useState } from 'react'
+import DialogComponent from '@/components/ui/dialogComponent'
+import ResultDialog from '../components/ui/resultDialog'
 
 function QuizPage() {
   const params = useParams()
@@ -38,7 +40,9 @@ function QuizPage() {
       })
 
       setGuestId(newGuestId)
+
       queryClient.invalidateQueries({ queryKey: ['quiz_result', params.id] })
+
       return Promise.resolve()
     } catch (err) {
       return Promise.reject(err)
@@ -66,12 +70,14 @@ function QuizPage() {
           {dataQuizResult ? (
             <AlertComponent
               alertType={'success'}
-              title={'Já existe uma resposta para esse quiz!'}
+              title={'Você já respondeu a esse quiz!'}
             >
-              <span className="text-lg">
-                Você já respondeu a esse quiz e obteve uma pontuação de{' '}
-                <strong>{dataQuizResult.score}</strong> ponto(s)
-              </span>
+              <DialogComponent btnTriggerText={'Mostrar Resultado'}>
+                <ResultDialog
+                  score={dataQuizResult.score}
+                  Quiz={dataQuizResult.Quiz}
+                />
+              </DialogComponent>
             </AlertComponent>
           ) : (
             <></>

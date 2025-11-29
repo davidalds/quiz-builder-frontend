@@ -42,7 +42,7 @@ function PublicHome() {
             />
           ) : (
             <AlertComponent title="Nenhum quizz encontrado!" alertType={'info'}>
-              Não foi possível encontrar nenhum quizz.
+              Não foi possível encontrar nenhum quiz.
             </AlertComponent>
           )}
         </TabsContent>

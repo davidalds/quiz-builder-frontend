@@ -47,7 +47,7 @@ function AlertComponent({ alertType = 'info', title, children }: IProps) {
     <Alert variant={handleAlertType().variant} className="items-center">
       <Icon />
       <AlertTitle className="text-lg">{title}</AlertTitle>
-      <AlertDescription>{children}</AlertDescription>
+      <AlertDescription className="mt-2">{children}</AlertDescription>
     </Alert>
   )
 }

@@ -127,4 +127,14 @@ export type resultType = {
   userId: number
   quizId: number
   score: number
+  Quiz: {
+    questions: {
+      id: number
+      text: string
+      answers: {
+        id: number
+        text: string
+      }[]
+    }[]
+  }
 }
