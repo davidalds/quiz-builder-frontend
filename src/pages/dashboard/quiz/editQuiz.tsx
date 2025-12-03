@@ -35,6 +35,7 @@ import { PlusIcon, Trash } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
+import AppendPlusButton from '../components/ui/appendPlusButton'
 
 interface IProps {
   quizId: string
@@ -308,6 +309,13 @@ function EditQuiz({ quizId, submitQuiz }: IProps) {
                   ))}
                 </div>
               ))}
+              {fields.length ? (
+                <AppendPlusButton
+                  action={() => append(defaultQuestionValues)}
+                />
+              ) : (
+                <></>
+              )}
               <button type="submit" hidden ref={submitBtn}></button>
             </form>
           </Form>

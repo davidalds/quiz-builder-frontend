@@ -30,6 +30,7 @@ import { toast } from 'react-toastify'
 import type { quizSubmitType } from '@/types/quizzes'
 import { formattedDataQuiz } from '@/utils/formattedDataQuiz'
 import LoadingComponent from '@/components/ui/loadingComponent'
+import AppendPlusButton from '../components/ui/appendPlusButton'
 
 interface IProps {
   submitQuiz: (data: quizSubmitType) => Promise<void>
@@ -266,6 +267,13 @@ function CreateQuiz({ submitQuiz }: IProps) {
                   ))}
                 </div>
               ))}
+              {fields.length ? (
+                <AppendPlusButton
+                  action={() => append(defaultQuestionValues)}
+                />
+              ) : (
+                <></>
+              )}
               <button type="submit" hidden ref={submitBtn}></button>
             </form>
           </Form>

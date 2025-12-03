@@ -1,5 +1,4 @@
 import { useAuth } from '@/auth/useAuth'
-import { Button } from '@/components/ui/button'
 import {
   Sidebar,
   SidebarContent,
@@ -13,7 +12,13 @@ import {
   SidebarRail,
 } from '@/components/ui/sidebar'
 import { QuizBuilderLogo } from '@/icons/quizBuilderLogo'
-import { FileQuestionMark, House, type LucideIcon } from 'lucide-react'
+import {
+  FileQuestionMark,
+  House,
+  LogOut,
+  User,
+  type LucideIcon,
+} from 'lucide-react'
 import { Link, useLocation } from 'react-router'
 
 type appLinksType = {
@@ -93,8 +98,12 @@ function AppSidebar() {
       <SidebarFooter>
         <SidebarMenuItem>
           <SidebarMenuButton variant={'content'}>
-            Usuário: {auth.user.name}
-            <Button onClick={() => auth.signOut()}>Logout</Button>
+            <User />
+            <span className="text-md font-medium">{auth.user.name}</span>
+          </SidebarMenuButton>
+          <SidebarMenuButton onClick={() => auth.signOut()}>
+            <LogOut />
+            <span className="text-md font-medium">Sair</span>
           </SidebarMenuButton>
         </SidebarMenuItem>
       </SidebarFooter>
