@@ -13,7 +13,7 @@ import { useUserQuizzes } from '@/hooks/quizzServiceHooks'
 import PaginationComponent from '../components/ui/paginationComponent'
 import { useState } from 'react'
 import { api } from '@/services'
-import type { quizSubmitEditType, quizSubmitType } from '@/types/quizzes'
+import type { QuizSubmit } from '@/types/quizzes'
 import { useQueryClient } from '@tanstack/react-query'
 import SkeletonContent from '@/components/ui/skeletonContent'
 import DialogComponent from '@/components/ui/dialogComponent'
@@ -33,7 +33,7 @@ function QuizPageDashboard() {
     setOffset(page - 1)
   }
 
-  const submitQuiz = async (data: quizSubmitType) => {
+  const submitQuiz = async (data: QuizSubmit) => {
     try {
       await api.post('quizzes', data)
       queryClient.invalidateQueries({ queryKey: ['user_quizzes'] })
@@ -45,7 +45,7 @@ function QuizPageDashboard() {
     }
   }
 
-  const handleEditQuiz = async (quizId: number, data: quizSubmitEditType) => {
+  const handleEditQuiz = async (quizId: number, data: QuizSubmit) => {
     try {
       await api.put(`quizzes/${quizId}`, data)
       queryClient.invalidateQueries({ queryKey: ['user_quizzes', quizId] })

@@ -6,16 +6,12 @@ import { Progress } from '@/components/ui/progress'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Separator } from '@/components/ui/separator'
 import SkeletonContent from '@/components/ui/skeletonContent'
-import type {
-  questionType,
-  questionTypeForm,
-  sendAnswerType,
-} from '@/types/quizzes'
+import type { Question, QuestionForm, sendAnswerType } from '@/types/quizzes'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
-const defaultQuestions: questionTypeForm[] = [
+const defaultQuestions: QuestionForm[] = [
   {
     id: 1,
     text: '',
@@ -33,14 +29,13 @@ const defaultQuestions: questionTypeForm[] = [
 type changeType = 'PREV' | 'NEXT'
 
 interface IProps {
-  questionsData: questionType[] | undefined
+  questionsData: Question[] | undefined
   isLoading: boolean
   submitAnswer: (data: sendAnswerType[]) => Promise<void>
 }
 
 function QuizArea({ questionsData, isLoading, submitAnswer }: IProps) {
-  const [questions, setQuestions] =
-    useState<questionTypeForm[]>(defaultQuestions)
+  const [questions, setQuestions] = useState<QuestionForm[]>(defaultQuestions)
   const [questionInd, setQuestionInd] = useState<number>(0)
 
   useEffect(() => {
@@ -86,7 +81,7 @@ function QuizArea({ questionsData, isLoading, submitAnswer }: IProps) {
       .length
   }
 
-  const formatToAnswer = (questions: questionTypeForm[]): sendAnswerType[] => {
+  const formatToAnswer = (questions: QuestionForm[]): sendAnswerType[] => {
     return questions.map(({ id, checkedAnswerId }) => ({
       questionId: id,
       answerId: +checkedAnswerId!,
@@ -95,7 +90,7 @@ function QuizArea({ questionsData, isLoading, submitAnswer }: IProps) {
 
   const uncheckAllQuestions = () => {
     return questions.map(
-      (q): questionTypeForm => ({
+      (q): QuestionForm => ({
         ...q,
         checkedAnswerId: null,
       }),

@@ -1,16 +1,16 @@
 import type {
-  responseQuiz,
-  responseQuizzes,
-  responseYourQuizzes,
-  resultType,
+  ResponseInfiniteQuizzes,
+  ResponseQuiz,
+  ResponseQuizzes,
+  Result,
 } from '@/types/quizzes'
 import { api } from '.'
 
 export const getUserQuizzes = async (
   offset: number,
   limit: number,
-): Promise<responseYourQuizzes> => {
-  const res = await api.get<responseYourQuizzes>('quizzes/user-quizzes', {
+): Promise<ResponseQuizzes> => {
+  const res = await api.get<ResponseQuizzes>('quizzes/user-quizzes', {
     params: { offset: offset, limit: limit },
   })
   return {
@@ -23,8 +23,8 @@ export const getNewestsQuizzes = async ({
   pageParam,
 }: {
   pageParam: number
-}): Promise<responseQuizzes> => {
-  const res = await api.get<responseQuizzes>('quizzes', {
+}): Promise<ResponseInfiniteQuizzes> => {
+  const res = await api.get<ResponseInfiniteQuizzes>('quizzes', {
     params: { cursor: pageParam, limit: 3 },
   })
   return {
@@ -34,7 +34,7 @@ export const getNewestsQuizzes = async ({
   }
 }
 
-export const getQuiz = async (id: string): Promise<responseQuiz> => {
+export const getQuiz = async (id: string): Promise<ResponseQuiz> => {
   const { data } = await api.get(`quizzes/${id}`)
   return data
 }
@@ -42,14 +42,14 @@ export const getQuiz = async (id: string): Promise<responseQuiz> => {
 export const getQuizResult = async (
   id: string,
   guestId?: string,
-): Promise<resultType> => {
+): Promise<Result> => {
   const { data } = await api.get(
     `quizzes/${id}/answers?guestId=${guestId ?? ''}`,
   )
   return data
 }
 
-export const getQuizByUser = async (id: string): Promise<responseQuiz> => {
+export const getQuizByUser = async (id: string): Promise<ResponseQuiz> => {
   const { data } = await api.get(`quizzes/user-quizzes/${id}`)
   return data
 }

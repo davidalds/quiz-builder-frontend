@@ -1,35 +1,21 @@
-import type { user } from './user'
+import type { User } from './user'
 
-export type quiz = {
+export interface Quiz {
   id: number
   title: string
   description: string
 }
 
-export type responseQuizzes = {
+export interface ResponseQuizzes {
   total: number
-  data: quiz[]
+  data: Quiz[]
+}
+
+export interface ResponseInfiniteQuizzes extends ResponseQuizzes {
   nextCursor: number | undefined
 }
 
-export type responseYourQuizzes = {
-  total: number
-  data: quiz[]
-}
-
-export type quizSubmitType = {
-  title: string
-  description: string
-  questions: {
-    text: string
-    answers: {
-      text: string
-      isCorrect: boolean
-    }[]
-  }[]
-}
-
-export type quizSubmitEditType = {
+export interface QuizSubmit {
   title: string
   description: string
   questions: {
@@ -43,78 +29,43 @@ export type quizSubmitEditType = {
   }[]
 }
 
-// ##################################################
-
-export type responseNewestsQuizzes = {
-  total: number
-  quizzes: {
-    id: number
-    title: string
-    description?: string
-  }[]
-}
-
 export type questionOption = {
   id: number
   title: string
 }
 
-export type questionAnswerForm = {
+interface Answer {
   id: number
   text: string
 }
 
-export type questionTypeForm = {
+export interface Question {
   id: number
   text: string
+  answers: Answer[]
+}
+
+export interface QuestionForm extends Question {
   checkedAnswerId: null | string
-  answers: questionAnswerForm[]
 }
 
-export type answerType = {
-  id: number
-  text: string
-  isCorrect?: boolean
-}
-
-export type questionType = {
-  id: number
-  text: string
-  answers: answerType[]
-}
-
-export type quizLabelType = {
+export interface QuizLabel {
   id: number
   title: string
   description?: string
-  User?: {
-    id: number
-    name: string
-  }
+  User?: User
 }
 
-export type responseQuiz = {
+interface QuestionResponse extends Question {
+  answers: (Answer & { isCorrect: boolean })[]
+}
+
+export interface ResponseQuiz {
   id: number
   title: string
   description: string
-  User: user
-  questions: questionType[]
-}
-
-export type optionsForm = {
-  title: string
-  isAnswer: 'true' | 'false'
-}
-
-export type questionForm = {
-  title: string
-  options: optionsForm[]
-}
-
-export type quizForm = {
-  title: string
-  description?: string
-  questions: questionForm[]
+  User: User
+  questions: QuestionResponse[]
 }
 
 export type sendAnswerType = {
@@ -122,19 +73,12 @@ export type sendAnswerType = {
   answerId: number
 }
 
-export type resultType = {
+export interface Result {
   id: number
   userId: number
   quizId: number
   score: number
   Quiz: {
-    questions: {
-      id: number
-      text: string
-      answers: {
-        id: number
-        text: string
-      }[]
-    }[]
+    questions: Question[]
   }
 }

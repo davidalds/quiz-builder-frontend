@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/dialog'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
-import type { resultType } from '@/types/quizzes'
+import type { Result } from '@/types/quizzes'
 
 interface IPropsItem {
   index: number
@@ -42,7 +42,7 @@ function Item({ index, questionText, answer }: IPropsItem) {
 
 interface IProps {
   score: number
-  Quiz: resultType['Quiz']
+  Quiz: Result['Quiz']
 }
 
 function ResultDialog({ score, Quiz }: IProps) {

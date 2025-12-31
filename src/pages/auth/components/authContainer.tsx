@@ -16,7 +16,7 @@ function AuthContainer({ children }: IProps) {
   return auth.isAuthenticated() ? (
     <Navigate to={'/dashboard'} state={{ from: location }} replace={true} />
   ) : (
-    <div className="flex justify-center items-center h-screen bg-background">
+    <div className="flex justify-center items-center h-screen bg-background p-2">
       <div className="absolute top-0 right-0 p-2">
         <Button
           variant={'secondary'}

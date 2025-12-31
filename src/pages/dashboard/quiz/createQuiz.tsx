@@ -27,13 +27,13 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { DialogClose } from '@radix-ui/react-dialog'
 import { useEffect, useRef, useState } from 'react'
 import { toast } from 'react-toastify'
-import type { quizSubmitType } from '@/types/quizzes'
+import type { QuizSubmit } from '@/types/quizzes'
 import { formattedDataQuiz } from '@/utils/formattedDataQuiz'
 import LoadingComponent from '@/components/ui/loadingComponent'
 import AppendPlusButton from '../components/ui/appendPlusButton'
 
 interface IProps {
-  submitQuiz: (data: quizSubmitType) => Promise<void>
+  submitQuiz: (data: QuizSubmit) => Promise<void>
 }
 
 const defaultQuestionValues: {

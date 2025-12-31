@@ -28,7 +28,7 @@ import { Separator } from '@/components/ui/separator'
 import { Textarea } from '@/components/ui/textarea'
 import { useQuizByUser } from '@/hooks/quizzServiceHooks'
 import { editQuizSchema, type editQuizFormType } from '@/schemas/editQuizSchema'
-import type { quizSubmitEditType } from '@/types/quizzes'
+import type { QuizSubmit } from '@/types/quizzes'
 import { formattedDataQuiz } from '@/utils/formattedDataQuiz'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { PlusIcon, Trash } from 'lucide-react'
@@ -36,15 +36,12 @@ import { useEffect, useRef, useState } from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import AppendPlusButton from '../components/ui/appendPlusButton'
+import type { Entry } from '@/types'
 
 interface IProps {
   quizId: string
-  submitQuiz: (quizId: number, data: quizSubmitEditType) => Promise<void>
+  submitQuiz: (quizId: number, data: QuizSubmit) => Promise<void>
 }
-
-type Entry<T> = {
-  [k in keyof T]: [k, T[k]]
-}[keyof T]
 
 const defaultQuestionValues: {
   id: number
@@ -97,9 +94,9 @@ function EditQuiz({ quizId, submitQuiz }: IProps) {
 
       const arr = Object.entries(obj) as Array<Entry<typeof obj>>
 
-      arr.map(([k, v]) => {
-        if (k === 'questions') {
-          v.map(({ id: qId, text: qText, answers }) =>
+      arr.map(([key, value]) => {
+        if (key === 'questions') {
+          value.map(({ id: qId, text: qText, answers }) =>
             append({
               id: qId,
               text: qText,
@@ -111,7 +108,7 @@ function EditQuiz({ quizId, submitQuiz }: IProps) {
             }),
           )
         } else {
-          form.setValue(k, v)
+          form.setValue(key, value)
         }
       })
     }

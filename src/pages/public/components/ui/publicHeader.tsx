@@ -1,37 +1,30 @@
 import { Button } from '@/components/ui/button'
-import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-} from '@/components/ui/navigation-menu'
-import { QuizBuilderLogo } from '@/icons/quizBuilderLogo'
+import { NavigationMenu } from '@/components/ui/navigation-menu'
+import { useIsMobile } from '@/hooks/use-mobile'
 import { useTheme } from '@/theme/useTheme'
 import { Moon, Sun } from 'lucide-react'
-import { Link } from 'react-router'
+import LogoLink from './logoLink'
+import MenuMobile from './menuMobile'
+import NavMenuList from './navMenuList'
 
 function PublicHeader() {
   const theme = useTheme()
+  const isMobile = useIsMobile()
 
   return (
     <header className="flex justify-between p-2 bg-primary text-primary-foreground">
-      <Link to={'/'} className="flex items-center gap-1">
-        <QuizBuilderLogo />
-        <h1 className="text-2xl font-bold">Quiz Builder</h1>
-      </Link>
+      <LogoLink />
       <NavigationMenu>
-        <NavigationMenuList>
-          <NavigationMenuItem>
-            <NavigationMenuLink asChild>
-              <Link to={'/'}>Home</Link>
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink asChild>
-              <Link to={'/dashboard'}>Criar Quiz</Link>
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-        </NavigationMenuList>
+        {isMobile ? (
+          <MenuMobile />
+        ) : (
+          <NavMenuList
+            navLinks={[
+              { link: '/', title: 'Home' },
+              { link: '/dashboard', title: 'Criar Quiz' },
+            ]}
+          />
+        )}
         <Button
           variant={'secondary'}
           className="ml-3"

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as NavigationMenuPrimitive from '@radix-ui/react-navigation-menu'
-import { cva } from 'class-variance-authority'
+import { cva, type VariantProps } from 'class-variance-authority'
 import { ChevronDownIcon } from 'lucide-react'
 
 import { cn } from '../../lib/utils'
@@ -29,17 +29,28 @@ function NavigationMenu({
   )
 }
 
+const navigationMenuListVariants = cva('', {
+  variants: {
+    variant: {
+      default: 'group flex flex-1 list-none items-center justify-center gap-1',
+      mobile: 'group flex flex-col flex-1 list-none gap-1',
+    },
+  },
+  defaultVariants: {
+    variant: 'default',
+  },
+})
+
 function NavigationMenuList({
   className,
+  variant,
   ...props
-}: React.ComponentProps<typeof NavigationMenuPrimitive.List>) {
+}: React.ComponentProps<typeof NavigationMenuPrimitive.List> &
+  VariantProps<typeof navigationMenuListVariants>) {
   return (
     <NavigationMenuPrimitive.List
       data-slot="navigation-menu-list"
-      className={cn(
-        'group flex flex-1 list-none items-center justify-center gap-1',
-        className,
-      )}
+      className={cn(navigationMenuListVariants({ variant, className }))}
       {...props}
     />
   )

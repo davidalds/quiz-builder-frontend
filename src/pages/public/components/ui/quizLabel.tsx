@@ -1,9 +1,9 @@
 import { Separator } from '@/components/ui/separator'
 import SkeletonContent from '@/components/ui/skeletonContent'
-import type { quizLabelType } from '@/types/quizzes'
+import type { QuizLabel as QuizLabelProps } from '@/types/quizzes'
 
 interface IProps {
-  quiz: quizLabelType | undefined
+  quiz: QuizLabelProps | undefined
   isLoading: boolean
 }
 
