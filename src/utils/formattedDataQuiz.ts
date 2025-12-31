@@ -1,10 +1,10 @@
 import type { quizFormType } from '@/schemas/createQuizSchema'
 import type { editQuizFormType } from '@/schemas/editQuizSchema'
-import type { quizSubmitEditType, quizSubmitType } from '@/types/quizzes'
+import type { QuizSubmit } from '@/types/quizzes'
 
 export const formattedDataQuiz = (
   data: quizFormType | editQuizFormType,
-): quizSubmitType | quizSubmitEditType => {
+): QuizSubmit => {
   return {
     ...data,
     questions: data.questions.map((q) => ({
