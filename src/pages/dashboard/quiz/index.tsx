@@ -21,11 +21,14 @@ import ConfirmDialog from '@/components/ui/confirmDialog'
 import { toast } from 'react-toastify'
 import AlertComponent from '@/components/ui/alertComponent'
 import EditQuiz from './editQuiz'
+import { useIsMobile } from '@/hooks/use-mobile'
+import sliceLongText from '@/utils/sliceLongText'
 
 function QuizPageDashboard() {
   const limit = 15
   const [offset, setOffset] = useState<number>(0)
   const { data, isLoading, isError } = useUserQuizzes(offset * limit, limit)
+  const isMobile = useIsMobile()
 
   const queryClient = useQueryClient()
 
@@ -80,7 +83,9 @@ function QuizPageDashboard() {
         </AlertComponent>
       ) : (
         <>
-          <div className="flex justify-end">
+          <div
+            className={`flex ${isMobile ? 'justify-center' : 'justify-end'} my-3`}
+          >
             <DialogComponent
               btnTriggerIcon={Plus}
               btnTriggerText={'Criar Novo Quiz'}
@@ -110,12 +115,14 @@ function QuizPageDashboard() {
                 data?.data.map(({ id: quizId, title }) => (
                   <TableRow key={quizId}>
                     <TableCell>{quizId}</TableCell>
-                    <TableCell>{title}</TableCell>
+                    <TableCell>
+                      {sliceLongText({ txt: title, sliceLength: 20 })}
+                    </TableCell>
                     <TableCell>
                       <div className="flex gap-2">
                         <DialogComponent
                           btnTriggerIcon={Pencil}
-                          btnTriggerText="Editar"
+                          btnTriggerText={!isMobile ? 'Editar' : ''}
                           btnVariant={'secondary'}
                         >
                           <EditQuiz
@@ -125,7 +132,7 @@ function QuizPageDashboard() {
                         </DialogComponent>
                         <DialogComponent
                           btnTriggerIcon={Trash}
-                          btnTriggerText="Excluir"
+                          btnTriggerText={!isMobile ? 'Excluir' : ''}
                           btnVariant={'destructive'}
                         >
                           <ConfirmDialog

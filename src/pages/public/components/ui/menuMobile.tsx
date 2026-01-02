@@ -6,7 +6,7 @@ import {
 } from '@/components/ui/sheet'
 import { Menu } from 'lucide-react'
 import LogoLink from './logoLink'
-import NavMenuList from './navMenuList'
+import NavMenu from './navMenuList'
 
 function MenuMobile() {
   return (
@@ -14,11 +14,11 @@ function MenuMobile() {
       <SheetTrigger>
         <Menu />
       </SheetTrigger>
-      <SheetContent>
+      <SheetContent side={'left'}>
         <SheetHeader>
           <LogoLink />
         </SheetHeader>
-        <NavMenuList
+        <NavMenu
           variant={'mobile'}
           navLinks={[
             { link: '/', title: 'Home' },

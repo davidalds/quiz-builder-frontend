@@ -1,11 +1,11 @@
 import { Button } from '@/components/ui/button'
-import { NavigationMenu } from '@/components/ui/navigation-menu'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { useTheme } from '@/theme/useTheme'
 import { Moon, Sun } from 'lucide-react'
 import LogoLink from './logoLink'
 import MenuMobile from './menuMobile'
-import NavMenuList from './navMenuList'
+import NavMenu from './navMenuList'
+import { NavigationMenu } from '@/components/ui/navigation-menu'
 
 function PublicHeader() {
   const theme = useTheme()
@@ -13,28 +13,30 @@ function PublicHeader() {
 
   return (
     <header className="flex justify-between p-2 bg-primary text-primary-foreground">
-      <LogoLink />
+      {!isMobile && <LogoLink />}
       <NavigationMenu>
         {isMobile ? (
           <MenuMobile />
         ) : (
-          <NavMenuList
-            navLinks={[
-              { link: '/', title: 'Home' },
-              { link: '/dashboard', title: 'Criar Quiz' },
-            ]}
-          />
+          <>
+            <NavMenu
+              navLinks={[
+                { link: '/', title: 'Home' },
+                { link: '/dashboard', title: 'Criar Quiz' },
+              ]}
+            />
+          </>
         )}
-        <Button
-          variant={'secondary'}
-          className="ml-3"
-          onClick={() =>
-            theme.changeTheme(theme.color === 'light' ? 'dark' : 'light')
-          }
-        >
-          {theme.color === 'light' ? <Moon /> : <Sun />}
-        </Button>
       </NavigationMenu>
+      <Button
+        variant={'secondary'}
+        className="ml-3"
+        onClick={() =>
+          theme.changeTheme(theme.color === 'light' ? 'dark' : 'light')
+        }
+      >
+        {theme.color === 'light' ? <Moon /> : <Sun />}
+      </Button>
     </header>
   )
 }

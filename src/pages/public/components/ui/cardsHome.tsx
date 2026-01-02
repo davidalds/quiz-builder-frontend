@@ -11,6 +11,7 @@ import type { ResponseQuizzes } from '@/types/quizzes'
 import type { InfiniteData } from '@tanstack/react-query'
 import { Link } from 'react-router'
 import { useIsMobile } from '@/hooks/use-mobile'
+import sliceLongText from '@/utils/sliceLongText'
 
 interface IProps {
   data: InfiniteData<ResponseQuizzes, unknown> | undefined
@@ -37,8 +38,12 @@ function CardsHome({
             group.data.map(({ id, title, description }) => (
               <Card key={id} className="min-w-sm max-w-sm">
                 <CardHeader className="grow">
-                  <CardTitle>{title}</CardTitle>
-                  <CardDescription>{description}</CardDescription>
+                  <CardTitle>
+                    {sliceLongText({ txt: title, sliceLength: 50 })}
+                  </CardTitle>
+                  <CardDescription>
+                    {sliceLongText({ txt: description, sliceLength: 80 })}
+                  </CardDescription>
                 </CardHeader>
                 <CardFooter
                   className={`${isMobile ? 'justify-center' : 'justify-end'}`}

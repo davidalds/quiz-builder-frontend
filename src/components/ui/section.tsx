@@ -13,7 +13,7 @@ function Section({ icon: Icon, title, children }: SectionProps) {
         <Icon />
         {title}
       </div>
-      <div className="py-8">{children}</div>
+      <div className="py-6">{children}</div>
     </section>
   )
 }

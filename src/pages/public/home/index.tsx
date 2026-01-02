@@ -4,6 +4,7 @@ import AlertComponent from '@/components/ui/alertComponent'
 import LoadingComponent from '@/components/ui/loadingComponent'
 import Section from '@/components/ui/section'
 import { ListPlus, ArrowUpNarrowWide } from 'lucide-react'
+import Intro from '../components/ui/intro'
 
 function PublicHome() {
   const {
@@ -17,10 +18,7 @@ function PublicHome() {
 
   return (
     <>
-      <div className="flex flex-col gap-2 items-center justify-center min-h-100 text-center text-3xl text-primary font-bold">
-        <span>Crie Para Qualquer Um</span>
-        <span>Responda Para Qualquer Um</span>
-      </div>
+      <Intro />
       <Section title="Quizzes Criados Recentemente" icon={ListPlus}>
         {isLoading ? (
           <div className="flex justify-center content-center">

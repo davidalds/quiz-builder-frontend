@@ -82,3 +82,20 @@ export interface Result {
     questions: Question[]
   }
 }
+
+interface AnswerInputValue {
+  id: number
+  text: ''
+  isCorrect: 'false' | 'true'
+}
+
+export interface QuestionValues {
+  text: string
+  answers: Pick<AnswerInputValue, 'text' | 'isCorrect'>[]
+}
+
+export interface QuestionValuesEdit {
+  id: number
+  text: string
+  answers: AnswerInputValue[]
+}

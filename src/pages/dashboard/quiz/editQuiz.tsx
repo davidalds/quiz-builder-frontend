@@ -6,29 +6,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
+import { Form, FormField } from '@/components/ui/form'
 import LoadingComponent from '@/components/ui/loadingComponent'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
-import { Textarea } from '@/components/ui/textarea'
 import { useQuizByUser } from '@/hooks/quizzServiceHooks'
 import { editQuizSchema, type editQuizFormType } from '@/schemas/editQuizSchema'
-import type { QuizSubmit } from '@/types/quizzes'
+import type { QuestionValuesEdit, QuizSubmit } from '@/types/quizzes'
 import { formattedDataQuiz } from '@/utils/formattedDataQuiz'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { PlusIcon, Trash } from 'lucide-react'
@@ -37,21 +21,15 @@ import { useFieldArray, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import AppendPlusButton from '../components/ui/appendPlusButton'
 import type { Entry } from '@/types'
+import FormInput from '../components/ui/formInput'
+import FormSelect from '../components/ui/formSelect'
 
 interface IProps {
   quizId: string
   submitQuiz: (quizId: number, data: QuizSubmit) => Promise<void>
 }
 
-const defaultQuestionValues: {
-  id: number
-  text: string
-  answers: {
-    id: number
-    text: ''
-    isCorrect: 'false' | 'true'
-  }[]
-} = {
+const defaultQuestionValues: QuestionValuesEdit = {
   id: 0,
   text: '',
   answers: [
@@ -166,17 +144,12 @@ function EditQuiz({ quizId, submitQuiz }: IProps) {
                 defaultValue=""
                 name={'title'}
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Título do Quiz</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Ex: Quiz de Geografia" {...field} />
-                    </FormControl>
-                    {fieldErrors.title ? (
-                      <FormMessage>{fieldErrors.title.message}</FormMessage>
-                    ) : (
-                      <></>
-                    )}
-                  </FormItem>
+                  <FormInput<editQuizFormType>
+                    inputLabel={'Título do Quiz'}
+                    inputPlaceholder={'Ex: Quiz de Geografia'}
+                    fieldError={fieldErrors.title}
+                    field={field}
+                  />
                 )}
               />
               <FormField
@@ -184,22 +157,15 @@ function EditQuiz({ quizId, submitQuiz }: IProps) {
                 defaultValue=""
                 name="description"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Descrição do Quiz</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Ex: Quiz de geografia sobre as capitais..."
-                        {...field}
-                      />
-                    </FormControl>
-                    {fieldErrors.description ? (
-                      <FormMessage>
-                        {fieldErrors.description.message}
-                      </FormMessage>
-                    ) : (
-                      <></>
-                    )}
-                  </FormItem>
+                  <FormInput<editQuizFormType>
+                    inputType={'textarea'}
+                    inputLabel={'Descrição do Quiz'}
+                    inputPlaceholder={
+                      'Ex: Quiz de geografia sobre as capitais...'
+                    }
+                    fieldError={fieldErrors.description}
+                    field={field}
+                  />
                 )}
               />
               <Separator />
@@ -236,73 +202,58 @@ function EditQuiz({ quizId, submitQuiz }: IProps) {
                     control={form.control}
                     name={`questions.${index}.text`}
                     render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Pergunta da Questão</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        {fieldErrors.questions?.length ? (
-                          <FormMessage>
-                            {fieldErrors.questions[index]?.text?.message}
-                          </FormMessage>
-                        ) : (
-                          <></>
-                        )}
-                      </FormItem>
+                      <FormInput<editQuizFormType>
+                        inputLabel={'Pergunta da Questão'}
+                        fieldError={
+                          fieldErrors.questions?.length
+                            ? fieldErrors.questions[index]?.text
+                            : undefined
+                        }
+                        field={field}
+                      />
                     )}
                   />
                   {answers.map((_, index2) => (
-                    <div className="flex gap-2" key={index2}>
-                      <FormField
-                        control={form.control}
-                        name={`questions.${index}.answers.${index2}.text`}
-                        render={({ field }) => (
-                          <FormItem className="grow">
-                            <FormLabel>Título da Opção</FormLabel>
-                            <FormControl>
-                              <Input {...field} />
-                            </FormControl>
-                            {fieldErrors.questions?.length ? (
-                              fieldErrors.questions[index]?.answers?.length ? (
-                                <FormMessage>
-                                  {
-                                    fieldErrors.questions[index].answers[index2]
-                                      ?.text?.message
-                                  }
-                                </FormMessage>
-                              ) : (
-                                <></>
-                              )
-                            ) : (
-                              <></>
-                            )}
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name={`questions.${index}.answers.${index2}.isCorrect`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Opção Correta</FormLabel>
-                            <Select
-                              onValueChange={field.onChange}
-                              defaultValue={field.value}
-                            >
-                              <FormControl>
-                                <SelectTrigger className="w-[180px]">
-                                  <SelectValue placeholder="Marque a opção" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="false">Falsa</SelectItem>
-                                <SelectItem value="true">Verdadeira</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </FormItem>
-                        )}
-                      />
-                    </div>
+                    <>
+                      <Badge variant={'secondary'}>Opção {index2 + 1}</Badge>
+                      <div className={`flex flex-col gap-2`} key={index2}>
+                        <FormField
+                          control={form.control}
+                          name={`questions.${index}.answers.${index2}.text`}
+                          render={({ field }) => (
+                            <FormInput<editQuizFormType>
+                              inputLabel={'Título da Opção'}
+                              fieldError={
+                                fieldErrors.questions?.length
+                                  ? fieldErrors.questions[index]?.answers
+                                      ?.length
+                                    ? fieldErrors.questions[index].answers[
+                                        index2
+                                      ]?.text
+                                    : undefined
+                                  : undefined
+                              }
+                              field={field}
+                            />
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name={`questions.${index}.answers.${index2}.isCorrect`}
+                          render={({ field }) => (
+                            <FormSelect<editQuizFormType>
+                              selectLabel={'Tipo da Opção'}
+                              selectPlaceholder={'Marque a opção'}
+                              field={field}
+                              selectItems={[
+                                { value: 'false', label: 'Errada' },
+                                { value: 'true', label: 'Certa' },
+                              ]}
+                            />
+                          )}
+                        />
+                      </div>
+                    </>
                   ))}
                 </div>
               ))}

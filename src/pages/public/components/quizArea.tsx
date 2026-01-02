@@ -117,7 +117,7 @@ function QuizArea({ questionsData, isLoading, submitAnswer }: IProps) {
         <SkeletonContent numberLines={8} lineH={10} />
       ) : (
         <>
-          <div className="flex flex-col w-100 items-center">
+          <div className="flex flex-col w-[100%] items-center gap-2">
             <Progress
               value={countAllQuestionsChecked() * (100 / questions.length)}
               className="w-[100%]"
