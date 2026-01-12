@@ -1,9 +1,5 @@
 function DashboardHome() {
-  return (
-    <>
-      <h1>Dashboard Home</h1>
-    </>
-  )
+  return <></>
 }
 
 export default DashboardHome

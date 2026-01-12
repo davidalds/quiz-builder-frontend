@@ -4,6 +4,7 @@ import { ToastContainer } from 'react-toastify'
 import router from './routes'
 import { useTheme } from './theme/useTheme'
 import AuthProvider from './auth/authProvider'
+import CookieProvider from './context/cookieProvider'
 
 const queryClient = new QueryClient()
 
@@ -13,12 +14,14 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <RouterProvider router={router} />
-        <ToastContainer
-          position={'top-center'}
-          theme={theme.color}
-          closeOnClick={true}
-        />
+        <CookieProvider>
+          <RouterProvider router={router} />
+          <ToastContainer
+            position={'top-center'}
+            theme={theme.color}
+            closeOnClick={true}
+          />
+        </CookieProvider>
       </AuthProvider>
     </QueryClientProvider>
   )

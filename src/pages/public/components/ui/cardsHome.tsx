@@ -1,4 +1,3 @@
-import LoadingComponent from '@/components/ui/loadingComponent'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -12,6 +11,7 @@ import type { InfiniteData } from '@tanstack/react-query'
 import { Link } from 'react-router'
 import { useIsMobile } from '@/hooks/use-mobile'
 import sliceLongText from '@/utils/sliceLongText'
+import { Spinner } from '@/components/ui/spinner'
 
 interface IProps {
   data: InfiniteData<ResponseQuizzes, unknown> | undefined
@@ -66,7 +66,7 @@ function CardsHome({
       <div className="flex justify-center mt-6">
         {hasNextPage ? (
           <Button disabled={isFetchingNextPage} onClick={fetchNextPage}>
-            {isFetchingNextPage ? <LoadingComponent /> : 'Carregar Mais'}
+            {isFetchingNextPage ? <Spinner /> : 'Carregar Mais'}
           </Button>
         ) : (
           <></>

@@ -1,10 +1,10 @@
 import CardsHome from '../components/ui/cardsHome'
 import { useInfinityQuizzes } from '@/hooks/quizzServiceHooks'
 import AlertComponent from '@/components/ui/alertComponent'
-import LoadingComponent from '@/components/ui/loadingComponent'
 import Section from '@/components/ui/section'
 import { ListPlus, ArrowUpNarrowWide } from 'lucide-react'
 import Intro from '../components/ui/intro'
+import { Spinner } from '@/components/ui/spinner'
 
 function PublicHome() {
   const {
@@ -22,7 +22,7 @@ function PublicHome() {
       <Section title="Quizzes Criados Recentemente" icon={ListPlus}>
         {isLoading ? (
           <div className="flex justify-center content-center">
-            <LoadingComponent />
+            <Spinner className="size-8" />
           </div>
         ) : isError ? (
           <AlertComponent

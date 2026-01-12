@@ -31,7 +31,7 @@ export const useUserQuizzes = (offset: number, limit: number) => {
 export const useQuiz = (id: string) => {
   return useQuery({
     queryKey: ['quiz', id],
-    queryFn: () => getQuiz(id),
+    queryFn: () => getQuiz(+id),
     enabled: !!id,
   })
 }
@@ -39,15 +39,15 @@ export const useQuiz = (id: string) => {
 export const useQuizByUser = (id: string) => {
   return useQuery({
     queryKey: ['user-quiz', id],
-    queryFn: () => getQuizByUser(id),
+    queryFn: () => getQuizByUser(+id),
     enabled: !!id,
   })
 }
 
-export const useQuizResult = (id: string, guestId?: string) => {
+export const useQuizResult = (id: string, guestId: string) => {
   return useQuery({
     queryKey: ['quiz_result', id],
-    queryFn: () => getQuizResult(id, guestId),
+    queryFn: () => getQuizResult(+id, guestId),
     enabled: !!id && !!guestId,
   })
 }

@@ -4,15 +4,20 @@ import type {
   ResponseQuizzes,
   Result,
 } from '@/types/quizzes'
-import { api } from '.'
+import { FetchApi } from '@/utils/fetchApi'
+import type { QuizAPI } from '@/types/apiClient'
+
+const fetchQuiz = new FetchApi<QuizAPI>()
 
 export const getUserQuizzes = async (
   offset: number,
   limit: number,
 ): Promise<ResponseQuizzes> => {
-  const res = await api.get<ResponseQuizzes>('quizzes/user-quizzes', {
-    params: { offset: offset, limit: limit },
+  const res = await fetchQuiz.fetch('quizzes/user-quizzes', 'get', {
+    offset,
+    limit,
   })
+
   return {
     total: res.data.total,
     data: res.data.data,
@@ -24,9 +29,11 @@ export const getNewestsQuizzes = async ({
 }: {
   pageParam: number
 }): Promise<ResponseInfiniteQuizzes> => {
-  const res = await api.get<ResponseInfiniteQuizzes>('quizzes', {
-    params: { cursor: pageParam, limit: 3 },
+  const res = await fetchQuiz.fetch('quizzes/', 'get', {
+    cursor: pageParam,
+    limit: 3,
   })
+
   return {
     total: res.data.total,
     data: res.data.data,
@@ -34,22 +41,23 @@ export const getNewestsQuizzes = async ({
   }
 }
 
-export const getQuiz = async (id: string): Promise<ResponseQuiz> => {
-  const { data } = await api.get(`quizzes/${id}`)
+export const getQuiz = async (id: number): Promise<ResponseQuiz> => {
+  const { data } = await fetchQuiz.fetch(`quizzes/${id}`, 'get')
   return data
 }
 
 export const getQuizResult = async (
-  id: string,
-  guestId?: string,
+  id: number,
+  guestId: string,
 ): Promise<Result> => {
-  const { data } = await api.get(
-    `quizzes/${id}/answers?guestId=${guestId ?? ''}`,
+  const { data } = await fetchQuiz.fetch(
+    `quizzes/${id}/answers?guestId=${guestId}`,
+    'get',
   )
   return data
 }
 
-export const getQuizByUser = async (id: string): Promise<ResponseQuiz> => {
-  const { data } = await api.get(`quizzes/user-quizzes/${id}`)
+export const getQuizByUser = async (id: number): Promise<ResponseQuiz> => {
+  const { data } = await fetchQuiz.fetch(`quizzes/user-quizzes/${id}`, 'get')
   return data
 }

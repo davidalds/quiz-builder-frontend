@@ -1,9 +1,9 @@
 import { useAuth } from '@/auth/useAuth'
 import { Button } from '@/components/ui/button'
 import { useTheme } from '@/theme/useTheme'
-import { Moon, Sun } from 'lucide-react'
+import { House, Moon, Sun } from 'lucide-react'
 import type { ReactNode } from 'react'
-import { Navigate, useLocation } from 'react-router'
+import { Link, Navigate, useLocation } from 'react-router'
 
 interface IProps {
   children: ReactNode
@@ -17,6 +17,14 @@ function AuthContainer({ children }: IProps) {
     <Navigate to={'/dashboard'} state={{ from: location }} replace={true} />
   ) : (
     <div className="flex justify-center items-center h-screen bg-background p-2">
+      <div className="absolute top-0 left-0 p-2">
+        <Button asChild>
+          <Link to={'/'}>
+            <House />
+            Página Inicial
+          </Link>
+        </Button>
+      </div>
       <div className="absolute top-0 right-0 p-2">
         <Button
           variant={'secondary'}

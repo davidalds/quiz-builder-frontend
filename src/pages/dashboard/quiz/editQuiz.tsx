@@ -7,7 +7,6 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Form, FormField } from '@/components/ui/form'
-import LoadingComponent from '@/components/ui/loadingComponent'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
 import { useQuizByUser } from '@/hooks/quizzServiceHooks'
@@ -23,6 +22,7 @@ import AppendPlusButton from '../components/ui/appendPlusButton'
 import type { Entry } from '@/types'
 import FormInput from '../components/ui/formInput'
 import FormSelect from '../components/ui/formSelect'
+import { Spinner } from '@/components/ui/spinner'
 
 interface IProps {
   quizId: string
@@ -42,7 +42,7 @@ const defaultQuestionValues: QuestionValuesEdit = {
 }
 
 function EditQuiz({ quizId, submitQuiz }: IProps) {
-  const { data } = useQuizByUser(quizId)
+  const { data, isLoading } = useQuizByUser(quizId)
 
   const form = useForm<editQuizFormType>({
     resolver: zodResolver(editQuizSchema),
@@ -133,141 +133,147 @@ function EditQuiz({ quizId, submitQuiz }: IProps) {
         <DialogTitle>Editar Quiz</DialogTitle>
       </DialogHeader>
       <ScrollArea className="mt-3 max-h-100">
-        <div className="p-3">
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="flex flex-col gap-3"
-            >
-              <FormField
-                control={form.control}
-                defaultValue=""
-                name={'title'}
-                render={({ field }) => (
-                  <FormInput<editQuizFormType>
-                    inputLabel={'Título do Quiz'}
-                    inputPlaceholder={'Ex: Quiz de Geografia'}
-                    fieldError={fieldErrors.title}
-                    field={field}
-                  />
-                )}
-              />
-              <FormField
-                control={form.control}
-                defaultValue=""
-                name="description"
-                render={({ field }) => (
-                  <FormInput<editQuizFormType>
-                    inputType={'textarea'}
-                    inputLabel={'Descrição do Quiz'}
-                    inputPlaceholder={
-                      'Ex: Quiz de geografia sobre as capitais...'
-                    }
-                    fieldError={fieldErrors.description}
-                    field={field}
-                  />
-                )}
-              />
-              <Separator />
-              <div className="flex justify-between items-center">
-                <span className="text-md font-medium">
-                  Cadastro de questões
-                </span>
-                <div>
-                  <Button
-                    type="button"
-                    size={'sm'}
-                    variant={'outline'}
-                    onClick={() => append(defaultQuestionValues)}
-                  >
-                    <PlusIcon />
-                    Adicionar
-                  </Button>
-                </div>
-              </div>
-              {fields.map(({ answers }, index) => (
-                <div className="flex flex-col gap-3 mt-2" key={index}>
-                  <div className="flex justify-between">
-                    <Badge>Questão {index + 1}</Badge>
+        {isLoading ? (
+          <div className="flex justify-center py-4">
+            <Spinner className="size-8" />
+          </div>
+        ) : (
+          <div className="p-3">
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="flex flex-col gap-3"
+              >
+                <FormField
+                  control={form.control}
+                  defaultValue=""
+                  name={'title'}
+                  render={({ field }) => (
+                    <FormInput<editQuizFormType>
+                      inputLabel={'Título do Quiz'}
+                      inputPlaceholder={'Ex: Quiz de Geografia'}
+                      fieldError={fieldErrors.title}
+                      field={field}
+                    />
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  defaultValue=""
+                  name="description"
+                  render={({ field }) => (
+                    <FormInput<editQuizFormType>
+                      inputType={'textarea'}
+                      inputLabel={'Descrição do Quiz'}
+                      inputPlaceholder={
+                        'Ex: Quiz de geografia sobre as capitais...'
+                      }
+                      fieldError={fieldErrors.description}
+                      field={field}
+                    />
+                  )}
+                />
+                <Separator />
+                <div className="flex justify-between items-center">
+                  <span className="text-md font-medium">
+                    Cadastro de questões
+                  </span>
+                  <div>
                     <Button
-                      size={'icon'}
-                      variant={'destructive'}
-                      onClick={() => remove(index)}
+                      type="button"
+                      size={'sm'}
+                      variant={'outline'}
+                      onClick={() => append(defaultQuestionValues)}
                     >
-                      <Trash />
+                      <PlusIcon />
+                      Adicionar
                     </Button>
                   </div>
-                  <FormField
-                    key={index}
-                    control={form.control}
-                    name={`questions.${index}.text`}
-                    render={({ field }) => (
-                      <FormInput<editQuizFormType>
-                        inputLabel={'Pergunta da Questão'}
-                        fieldError={
-                          fieldErrors.questions?.length
-                            ? fieldErrors.questions[index]?.text
-                            : undefined
-                        }
-                        field={field}
-                      />
-                    )}
-                  />
-                  {answers.map((_, index2) => (
-                    <>
-                      <Badge variant={'secondary'}>Opção {index2 + 1}</Badge>
-                      <div className={`flex flex-col gap-2`} key={index2}>
-                        <FormField
-                          control={form.control}
-                          name={`questions.${index}.answers.${index2}.text`}
-                          render={({ field }) => (
-                            <FormInput<editQuizFormType>
-                              inputLabel={'Título da Opção'}
-                              fieldError={
-                                fieldErrors.questions?.length
-                                  ? fieldErrors.questions[index]?.answers
-                                      ?.length
-                                    ? fieldErrors.questions[index].answers[
-                                        index2
-                                      ]?.text
-                                    : undefined
-                                  : undefined
-                              }
-                              field={field}
-                            />
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name={`questions.${index}.answers.${index2}.isCorrect`}
-                          render={({ field }) => (
-                            <FormSelect<editQuizFormType>
-                              selectLabel={'Tipo da Opção'}
-                              selectPlaceholder={'Marque a opção'}
-                              field={field}
-                              selectItems={[
-                                { value: 'false', label: 'Errada' },
-                                { value: 'true', label: 'Certa' },
-                              ]}
-                            />
-                          )}
-                        />
-                      </div>
-                    </>
-                  ))}
                 </div>
-              ))}
-              {fields.length ? (
-                <AppendPlusButton
-                  action={() => append(defaultQuestionValues)}
-                />
-              ) : (
-                <></>
-              )}
-              <button type="submit" hidden ref={submitBtn}></button>
-            </form>
-          </Form>
-        </div>
+                {fields.map(({ answers }, index) => (
+                  <div className="flex flex-col gap-3 mt-2" key={index}>
+                    <div className="flex justify-between">
+                      <Badge>Questão {index + 1}</Badge>
+                      <Button
+                        size={'icon'}
+                        variant={'destructive'}
+                        onClick={() => remove(index)}
+                      >
+                        <Trash />
+                      </Button>
+                    </div>
+                    <FormField
+                      key={index}
+                      control={form.control}
+                      name={`questions.${index}.text`}
+                      render={({ field }) => (
+                        <FormInput<editQuizFormType>
+                          inputLabel={'Pergunta da Questão'}
+                          fieldError={
+                            fieldErrors.questions?.length
+                              ? fieldErrors.questions[index]?.text
+                              : undefined
+                          }
+                          field={field}
+                        />
+                      )}
+                    />
+                    {answers.map((_, index2) => (
+                      <>
+                        <Badge variant={'secondary'}>Opção {index2 + 1}</Badge>
+                        <div className={`flex flex-col gap-2`} key={index2}>
+                          <FormField
+                            control={form.control}
+                            name={`questions.${index}.answers.${index2}.text`}
+                            render={({ field }) => (
+                              <FormInput<editQuizFormType>
+                                inputLabel={'Título da Opção'}
+                                fieldError={
+                                  fieldErrors.questions?.length
+                                    ? fieldErrors.questions[index]?.answers
+                                        ?.length
+                                      ? fieldErrors.questions[index].answers[
+                                          index2
+                                        ]?.text
+                                      : undefined
+                                    : undefined
+                                }
+                                field={field}
+                              />
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name={`questions.${index}.answers.${index2}.isCorrect`}
+                            render={({ field }) => (
+                              <FormSelect<editQuizFormType>
+                                selectLabel={'Tipo da Opção'}
+                                selectPlaceholder={'Marque a opção'}
+                                field={field}
+                                selectItems={[
+                                  { value: 'false', label: 'Errada' },
+                                  { value: 'true', label: 'Certa' },
+                                ]}
+                              />
+                            )}
+                          />
+                        </div>
+                      </>
+                    ))}
+                  </div>
+                ))}
+                {fields.length ? (
+                  <AppendPlusButton
+                    action={() => append(defaultQuestionValues)}
+                  />
+                ) : (
+                  <></>
+                )}
+                <button type="submit" hidden ref={submitBtn}></button>
+              </form>
+            </Form>
+          </div>
+        )}
       </ScrollArea>
       <DialogFooter>
         <DialogClose asChild>
@@ -283,7 +289,7 @@ function EditQuiz({ quizId, submitQuiz }: IProps) {
             }
           }}
         >
-          {isSubmitting ? <LoadingComponent /> : 'Confirmar'}
+          {isSubmitting ? <Spinner /> : 'Confirmar'}
         </Button>
       </DialogFooter>
     </>

@@ -13,10 +13,10 @@ import { useEffect, useRef, useState } from 'react'
 import { toast } from 'react-toastify'
 import type { QuestionValues, QuizSubmit } from '@/types/quizzes'
 import { formattedDataQuiz } from '@/utils/formattedDataQuiz'
-import LoadingComponent from '@/components/ui/loadingComponent'
 import AppendPlusButton from '../components/ui/appendPlusButton'
 import FormInput from '../components/ui/formInput'
 import FormSelect from '../components/ui/formSelect'
+import { Spinner } from '@/components/ui/spinner'
 
 interface IProps {
   submitQuiz: (data: QuizSubmit) => Promise<void>
@@ -246,7 +246,7 @@ function CreateQuiz({ submitQuiz }: IProps) {
             }
           }}
         >
-          {isSubmitting ? <LoadingComponent /> : 'Confirmar'}
+          {isSubmitting ? <Spinner /> : 'Confirmar'}
         </Button>
       </DialogFooter>
     </>
