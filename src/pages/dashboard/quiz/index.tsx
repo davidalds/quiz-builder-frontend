@@ -1,17 +1,9 @@
 import { Pencil, Plus, Trash } from 'lucide-react'
 import CreateQuiz from './createQuiz'
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
+import { TableCell, TableRow } from '@/components/ui/table'
 import { useUserQuizzes } from '@/hooks/quizzServiceHooks'
 import PaginationComponent from '../components/ui/paginationComponent'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { api } from '@/services'
 import type { QuizSubmit } from '@/types/quizzes'
 import { useQueryClient } from '@tanstack/react-query'
@@ -23,11 +15,18 @@ import AlertComponent from '@/components/ui/alertComponent'
 import EditQuiz from './editQuiz'
 import { useIsMobile } from '@/hooks/use-mobile'
 import sliceLongText from '@/utils/sliceLongText'
+import TableComponent from '@/components/ui/tableComponent'
+import Search from '@/components/ui/search'
 
 function QuizPageDashboard() {
   const limit = 15
   const [offset, setOffset] = useState<number>(0)
-  const { data, isLoading, isError } = useUserQuizzes(offset * limit, limit)
+  const [search, setSearch] = useState<string>('')
+  const { data, isLoading, isError, isRefetching } = useUserQuizzes(
+    offset * limit,
+    limit,
+    search,
+  )
   const isMobile = useIsMobile()
 
   const queryClient = useQueryClient()
@@ -72,6 +71,10 @@ function QuizPageDashboard() {
     }
   }
 
+  useEffect(() => {
+    queryClient.invalidateQueries({ queryKey: ['user_quizzes'] })
+  }, [search, queryClient])
+
   return (
     <div className="py-3">
       {isError ? (
@@ -84,7 +87,7 @@ function QuizPageDashboard() {
       ) : (
         <>
           <div
-            className={`flex ${isMobile ? 'justify-center' : 'justify-end'} my-3`}
+            className={`flex ${isMobile ? 'justify-center' : 'justify-end'} my-4`}
           >
             <DialogComponent
               btnTriggerIcon={Plus}
@@ -93,60 +96,60 @@ function QuizPageDashboard() {
               <CreateQuiz submitQuiz={submitQuiz} />
             </DialogComponent>
           </div>
-          <Table className="my-3">
-            <TableCaption>Lista dos quizzes criados por você</TableCaption>
-            <TableHeader>
+          <div className="my-2">
+            <Search
+              submitSearch={setSearch}
+              isSearching={isRefetching}
+              placeholder={'Título do Quiz'}
+            />
+          </div>
+          <TableComponent
+            headers={['id', 'Título', 'Ações']}
+            caption="Quizzes Criados Por Você"
+          >
+            {isLoading ? (
               <TableRow>
-                <TableHead>Id</TableHead>
-                <TableHead>Título</TableHead>
-                <TableHead>Ações</TableHead>
+                {Array.from({ length: 2 }).map((_, index) => (
+                  <TableCell key={index}>
+                    <SkeletonContent numberLines={limit} lineH={4} />
+                  </TableCell>
+                ))}
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoading ? (
-                <TableRow>
-                  {Array.from({ length: 2 }).map((_, index) => (
-                    <TableCell key={index}>
-                      <SkeletonContent numberLines={limit} lineH={4} />
-                    </TableCell>
-                  ))}
+            ) : (
+              data?.data.map(({ id: quizId, title }) => (
+                <TableRow key={quizId}>
+                  <TableCell>{quizId}</TableCell>
+                  <TableCell>
+                    {sliceLongText({ txt: title, sliceLength: 20 })}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex gap-2">
+                      <DialogComponent
+                        btnTriggerIcon={Pencil}
+                        btnTriggerText={!isMobile ? 'Editar' : ''}
+                        btnVariant={'secondary'}
+                      >
+                        <EditQuiz
+                          quizId={String(quizId)}
+                          submitQuiz={handleEditQuiz}
+                        />
+                      </DialogComponent>
+                      <DialogComponent
+                        btnTriggerIcon={Trash}
+                        btnTriggerText={!isMobile ? 'Excluir' : ''}
+                        btnVariant={'destructive'}
+                      >
+                        <ConfirmDialog
+                          title="Confirmar Exclusão do Quiz?"
+                          confirmCallback={() => handleDeleteQuiz(quizId)}
+                        />
+                      </DialogComponent>
+                    </div>
+                  </TableCell>
                 </TableRow>
-              ) : (
-                data?.data.map(({ id: quizId, title }) => (
-                  <TableRow key={quizId}>
-                    <TableCell>{quizId}</TableCell>
-                    <TableCell>
-                      {sliceLongText({ txt: title, sliceLength: 20 })}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex gap-2">
-                        <DialogComponent
-                          btnTriggerIcon={Pencil}
-                          btnTriggerText={!isMobile ? 'Editar' : ''}
-                          btnVariant={'secondary'}
-                        >
-                          <EditQuiz
-                            quizId={String(quizId)}
-                            submitQuiz={handleEditQuiz}
-                          />
-                        </DialogComponent>
-                        <DialogComponent
-                          btnTriggerIcon={Trash}
-                          btnTriggerText={!isMobile ? 'Excluir' : ''}
-                          btnVariant={'destructive'}
-                        >
-                          <ConfirmDialog
-                            title="Confirmar Exclusão do Quiz?"
-                            confirmCallback={() => handleDeleteQuiz(quizId)}
-                          />
-                        </DialogComponent>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
+              ))
+            )}
+          </TableComponent>
           <PaginationComponent
             total={data?.total ? data.total : 0}
             perPage={limit}

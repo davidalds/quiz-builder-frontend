@@ -11,19 +11,23 @@ import {
   useQuery,
 } from '@tanstack/react-query'
 
-export const useInfinityQuizzes = () => {
+export const useInfinityQuizzes = (search: string) => {
   return useInfiniteQuery({
     queryKey: ['quizzes'],
-    queryFn: getNewestsQuizzes,
+    queryFn: ({ pageParam }) => getNewestsQuizzes({ pageParam, search }),
     initialPageParam: 0,
     getNextPageParam: (lastPage) => lastPage.nextCursor,
   })
 }
 
-export const useUserQuizzes = (offset: number, limit: number) => {
+export const useUserQuizzes = (
+  offset: number,
+  limit: number,
+  search: string,
+) => {
   return useQuery({
     queryKey: ['user_quizzes', offset],
-    queryFn: () => getUserQuizzes(offset, limit),
+    queryFn: () => getUserQuizzes(offset, limit, search),
     placeholderData: keepPreviousData,
   })
 }

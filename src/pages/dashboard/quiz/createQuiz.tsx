@@ -17,6 +17,7 @@ import AppendPlusButton from '../components/ui/appendPlusButton'
 import FormInput from '../components/ui/formInput'
 import FormSelect from '../components/ui/formSelect'
 import { Spinner } from '@/components/ui/spinner'
+import React from 'react'
 
 interface IProps {
   submitQuiz: (data: QuizSubmit) => Promise<void>
@@ -177,7 +178,7 @@ function CreateQuiz({ submitQuiz }: IProps) {
                     )}
                   />
                   {Array.from({ length: 5 }).map((_, index2) => (
-                    <>
+                    <React.Fragment key={index2}>
                       <Badge variant={'secondary'}>Opção {index2 + 1}</Badge>
                       <div className={`flex flex-col gap-2`} key={index2}>
                         <FormField
@@ -216,7 +217,7 @@ function CreateQuiz({ submitQuiz }: IProps) {
                           )}
                         />
                       </div>
-                    </>
+                    </React.Fragment>
                   ))}
                 </div>
               ))}

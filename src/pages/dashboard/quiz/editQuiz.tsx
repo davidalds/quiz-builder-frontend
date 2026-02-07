@@ -23,6 +23,7 @@ import type { Entry } from '@/types'
 import FormInput from '../components/ui/formInput'
 import FormSelect from '../components/ui/formSelect'
 import { Spinner } from '@/components/ui/spinner'
+import React from 'react'
 
 interface IProps {
   quizId: string
@@ -219,7 +220,7 @@ function EditQuiz({ quizId, submitQuiz }: IProps) {
                       )}
                     />
                     {answers.map((_, index2) => (
-                      <>
+                      <React.Fragment key={index2}>
                         <Badge variant={'secondary'}>Opção {index2 + 1}</Badge>
                         <div className={`flex flex-col gap-2`} key={index2}>
                           <FormField
@@ -258,7 +259,7 @@ function EditQuiz({ quizId, submitQuiz }: IProps) {
                             )}
                           />
                         </div>
-                      </>
+                      </React.Fragment>
                     ))}
                   </div>
                 ))}

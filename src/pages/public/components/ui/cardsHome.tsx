@@ -12,6 +12,7 @@ import { Link } from 'react-router'
 import { useIsMobile } from '@/hooks/use-mobile'
 import sliceLongText from '@/utils/sliceLongText'
 import { Spinner } from '@/components/ui/spinner'
+import { Badge } from '@/components/ui/badge'
 
 interface IProps {
   data: InfiniteData<ResponseQuizzes, unknown> | undefined
@@ -35,7 +36,7 @@ function CardsHome({
       >
         {data !== undefined ? (
           data.pages.map((group) =>
-            group.data.map(({ id, title, description }) => (
+            group.data.map(({ id, title, description, User: { name } }) => (
               <Card key={id} className="min-w-sm max-w-sm">
                 <CardHeader className="grow">
                   <CardTitle>
@@ -46,12 +47,13 @@ function CardsHome({
                   </CardDescription>
                 </CardHeader>
                 <CardFooter
-                  className={`${isMobile ? 'justify-center' : 'justify-end'}`}
+                  className={`${isMobile ? 'flex-col gap-3' : 'justify-between'}`}
                 >
+                  <Badge className="bg-accent">{name}</Badge>
                   <Button
                     variant={'secondary'}
                     asChild
-                    className={`${isMobile ? 'grow' : ''}`}
+                    className={`${isMobile ? 'w-[100%]' : ''}`}
                   >
                     <Link to={`quiz/${id}`}>Acessar</Link>
                   </Button>

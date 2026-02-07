@@ -53,7 +53,7 @@ function PaginationComponent({ total, perPage, changeOffset }: IProps) {
   }
 
   return (
-    <Pagination>
+    <Pagination className="mt-3">
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious

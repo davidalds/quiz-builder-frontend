@@ -5,8 +5,13 @@ import Section from '@/components/ui/section'
 import { ListPlus, ArrowUpNarrowWide } from 'lucide-react'
 import Intro from '../components/ui/intro'
 import { Spinner } from '@/components/ui/spinner'
+import Search from '@/components/ui/search'
+import { useEffect, useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 
 function PublicHome() {
+  const [search, setSearch] = useState<string>('')
+  const queryClient = useQueryClient()
   const {
     data,
     isLoading,
@@ -14,12 +19,24 @@ function PublicHome() {
     hasNextPage,
     isFetchingNextPage,
     isError,
-  } = useInfinityQuizzes()
+    isRefetching,
+  } = useInfinityQuizzes(search)
+
+  useEffect(() => {
+    queryClient.invalidateQueries({ queryKey: ['quizzes'] })
+  }, [search, queryClient])
 
   return (
     <>
       <Intro />
       <Section title="Quizzes Criados Recentemente" icon={ListPlus}>
+        <div className="mb-4">
+          <Search
+            isSearching={isRefetching}
+            submitSearch={setSearch}
+            placeholder={'Título do Quiz ou Nome do Usuário'}
+          />
+        </div>
         {isLoading ? (
           <div className="flex justify-center content-center">
             <Spinner className="size-8" />

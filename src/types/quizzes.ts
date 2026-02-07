@@ -4,6 +4,9 @@ export interface Quiz {
   id: number
   title: string
   description: string
+  createdAt: string
+  updatedAt: string
+  User: Pick<User, 'name'>
 }
 
 export interface ResponseQuizzes {
@@ -37,12 +40,13 @@ export type questionOption = {
 interface Answer {
   id: number
   text: string
+  isCorrect: boolean
 }
 
 export interface Question {
   id: number
   text: string
-  answers: Answer[]
+  answers: Omit<Answer, 'isCorrect'>[]
 }
 
 export interface QuestionForm extends Question {
@@ -57,7 +61,7 @@ export interface QuizLabel {
 }
 
 interface QuestionResponse extends Question {
-  answers: (Answer & { isCorrect: boolean })[]
+  answers: Answer[]
 }
 
 export interface ResponseQuiz {
@@ -91,7 +95,7 @@ interface AnswerInputValue {
 
 export interface QuestionValues {
   text: string
-  answers: Pick<AnswerInputValue, 'text' | 'isCorrect'>[]
+  answers: Omit<AnswerInputValue, 'id'>[]
 }
 
 export interface QuestionValuesEdit {

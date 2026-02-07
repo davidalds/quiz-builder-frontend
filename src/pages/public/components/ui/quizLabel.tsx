@@ -1,3 +1,4 @@
+import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import SkeletonContent from '@/components/ui/skeletonContent'
 import type { QuizLabel as QuizLabelProps } from '@/types/quizzes'
@@ -19,7 +20,7 @@ function QuizLabel({ quiz, isLoading }: IProps) {
           <p>{quiz!.description}</p>
           <p>
             <span className="font-medium mr-2">Criado por:</span>
-            {quiz?.User?.name ?? 'User'}
+            <Badge className="bg-accent">{quiz?.User?.name ?? 'User'}</Badge>
           </p>
         </>
       )}

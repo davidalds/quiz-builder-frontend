@@ -12,10 +12,12 @@ const fetchQuiz = new FetchApi<QuizAPI>()
 export const getUserQuizzes = async (
   offset: number,
   limit: number,
+  search: string,
 ): Promise<ResponseQuizzes> => {
   const res = await fetchQuiz.fetch('quizzes/user-quizzes', 'get', {
     offset,
     limit,
+    search,
   })
 
   return {
@@ -26,12 +28,15 @@ export const getUserQuizzes = async (
 
 export const getNewestsQuizzes = async ({
   pageParam,
+  search,
 }: {
   pageParam: number
+  search: string
 }): Promise<ResponseInfiniteQuizzes> => {
   const res = await fetchQuiz.fetch('quizzes/', 'get', {
     cursor: pageParam,
     limit: 3,
+    search: search,
   })
 
   return {
