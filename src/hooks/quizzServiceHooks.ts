@@ -1,5 +1,6 @@
 import {
   getNewestsQuizzes,
+  getPopularQuizzes,
   getQuiz,
   getQuizByUser,
   getQuizResult,
@@ -15,6 +16,15 @@ export const useInfinityQuizzes = (search: string) => {
   return useInfiniteQuery({
     queryKey: ['quizzes'],
     queryFn: ({ pageParam }) => getNewestsQuizzes({ pageParam, search }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
+  })
+}
+
+export const useInfinityPopularQuizzes = () => {
+  return useInfiniteQuery({
+    queryKey: ['quizzes/popular'],
+    queryFn: getPopularQuizzes,
     initialPageParam: 0,
     getNextPageParam: (lastPage) => lastPage.nextCursor,
   })

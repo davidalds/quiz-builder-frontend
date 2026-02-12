@@ -1,5 +1,8 @@
 import CardsHome from '../components/ui/cardsHome'
-import { useInfinityQuizzes } from '@/hooks/quizzServiceHooks'
+import {
+  useInfinityPopularQuizzes,
+  useInfinityQuizzes,
+} from '@/hooks/quizzServiceHooks'
 import AlertComponent from '@/components/ui/alertComponent'
 import Section from '@/components/ui/section'
 import { ListPlus, ArrowUpNarrowWide } from 'lucide-react'
@@ -21,6 +24,14 @@ function PublicHome() {
     isError,
     isRefetching,
   } = useInfinityQuizzes(search)
+  const {
+    data: dataPopularQuizzes,
+    isLoading: isPopularQuizzesLoading,
+    fetchNextPage: fetchNextPagePopularQuizzes,
+    hasNextPage: hasPopularQuizzesNextPage,
+    isFetchingNextPage: isFetchingPopularQuizzesNextPage,
+    isError: isErrorPopularQuizzes,
+  } = useInfinityPopularQuizzes()
 
   useEffect(() => {
     queryClient.invalidateQueries({ queryKey: ['quizzes'] })
@@ -29,7 +40,7 @@ function PublicHome() {
   return (
     <>
       <Intro />
-      <Section title="Quizzes Criados Recentemente" icon={ListPlus}>
+      <Section title="Quizzes Mais Recentes" icon={ListPlus}>
         <div className="mb-4">
           <Search
             isSearching={isRefetching}
@@ -61,10 +72,30 @@ function PublicHome() {
           </AlertComponent>
         )}
       </Section>
-      <Section title="Quizzes Mais Acessados" icon={ArrowUpNarrowWide}>
-        <AlertComponent title="Em breve!" alertType={'info'}>
-          Em breve!
-        </AlertComponent>
+      <Section title="Quizzes Mais Populares" icon={ArrowUpNarrowWide}>
+        {isPopularQuizzesLoading ? (
+          <div className="flex justify-center content-center">
+            <Spinner className="size-8" />
+          </div>
+        ) : isErrorPopularQuizzes ? (
+          <AlertComponent
+            title="Não foi possível carregar quizzes!"
+            alertType={'error'}
+          >
+            Ocorreu um erro ao carregar os quizzes!
+          </AlertComponent>
+        ) : dataPopularQuizzes?.pages[0].total ? (
+          <CardsHome
+            data={dataPopularQuizzes}
+            hasNextPage={hasPopularQuizzesNextPage}
+            isFetchingNextPage={isFetchingPopularQuizzesNextPage}
+            fetchNextPage={fetchNextPagePopularQuizzes}
+          />
+        ) : (
+          <AlertComponent title="Nenhum quizz encontrado!" alertType={'info'}>
+            Não foi possível encontrar nenhum quiz.
+          </AlertComponent>
+        )}
       </Section>
     </>
   )

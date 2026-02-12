@@ -46,6 +46,23 @@ export const getNewestsQuizzes = async ({
   }
 }
 
+export const getPopularQuizzes = async ({
+  pageParam,
+}: {
+  pageParam: number
+}): Promise<ResponseInfiniteQuizzes> => {
+  const res = await fetchQuiz.fetch('quizzes/popular', 'get', {
+    cursor: pageParam,
+    limit: 3,
+  })
+
+  return {
+    total: res.data.total,
+    data: res.data.data,
+    nextCursor: res.data.nextCursor,
+  }
+}
+
 export const getQuiz = async (id: number): Promise<ResponseQuiz> => {
   const { data } = await fetchQuiz.fetch(`quizzes/${id}`, 'get')
   return data
