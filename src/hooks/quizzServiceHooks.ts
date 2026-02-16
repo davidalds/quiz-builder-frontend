@@ -1,4 +1,5 @@
 import {
+  getDashboardData,
   getNewestsQuizzes,
   getPopularQuizzes,
   getQuiz,
@@ -63,5 +64,12 @@ export const useQuizResult = (id: string, guestId: string) => {
     queryKey: ['quiz_result', id],
     queryFn: () => getQuizResult(+id, guestId),
     enabled: !!id && !!guestId,
+  })
+}
+
+export const useDashboardData = () => {
+  return useQuery({
+    queryKey: ['dashboard'],
+    queryFn: getDashboardData,
   })
 }

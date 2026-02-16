@@ -63,6 +63,11 @@ export const getPopularQuizzes = async ({
   }
 }
 
+export const getDashboardData = async () => {
+  const { data } = await fetchQuiz.fetch(`quizzes/dashboard`, 'get')
+  return data
+}
+
 export const getQuiz = async (id: number): Promise<ResponseQuiz> => {
   const { data } = await fetchQuiz.fetch(`quizzes/${id}`, 'get')
   return data

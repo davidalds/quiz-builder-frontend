@@ -4,6 +4,7 @@ import type { accessTokenType, loginType, userType } from './types'
 import { jwtDecode } from 'jwt-decode'
 import Cookies from 'js-cookie'
 import { api } from '@/services'
+import { useQueryClient } from '@tanstack/react-query'
 
 interface IProps {
   children: ReactNode
@@ -16,6 +17,7 @@ export default function AuthProvider({ children }: IProps) {
     email: '',
     name: '',
   }
+  const queryClient = useQueryClient()
 
   const [user, setUser] = useState<userType>(defaultValues)
 
@@ -33,6 +35,7 @@ export default function AuthProvider({ children }: IProps) {
 
   const signOut = () => {
     Cookies.remove('access_token')
+    queryClient.invalidateQueries()
     setUser(defaultValues)
     setIsLoggegIn(false)
   }

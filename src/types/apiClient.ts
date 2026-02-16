@@ -1,4 +1,5 @@
 import type {
+  Dashboard,
   ResponseInfiniteQuizzes,
   ResponseQuiz,
   ResponseQuizzes,
@@ -11,6 +12,7 @@ export interface QuizAPI {
   'quizzes/': ResponseInfiniteQuizzes
   'quizzes/popular': ResponseInfiniteQuizzes
   'quizzes/user-quizzes': ResponseQuizzes
+  'quizzes/dashboard': Dashboard
   [key: `quizzes/${number}`]: ResponseQuiz
   [key: `quizzes/user-quizzes/${number}`]: ResponseQuiz
   [key: `quizzes/${number}/answers?guestId=${string}`]: Result

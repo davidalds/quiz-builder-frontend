@@ -9,6 +9,16 @@ export interface Quiz {
   User: Pick<User, 'name'>
 }
 
+export interface Dashboard {
+  totalQuizzes: number
+  totalAnsweredQuizzes: number
+  mostAnsweredQuiz?: Quiz & {
+    _count: {
+      Result: number
+    }
+  }
+}
+
 export interface ResponseQuizzes {
   total: number
   data: Quiz[]
