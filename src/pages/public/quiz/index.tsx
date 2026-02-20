@@ -19,7 +19,7 @@ function QuizPage() {
 
   const submitAnswer = async (data: sendAnswerType[]): Promise<void> => {
     try {
-      await api.post(`quizzes/${params.id}/answers`, {
+      await api.post(`results?quizId=${params.id}`, {
         userAnswers: data,
         guestId,
       })

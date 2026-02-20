@@ -15,5 +15,5 @@ export interface QuizAPI {
   'quizzes/dashboard': Dashboard
   [key: `quizzes/${number}`]: ResponseQuiz
   [key: `quizzes/user-quizzes/${number}`]: ResponseQuiz
-  [key: `quizzes/${number}/answers?guestId=${string}`]: Result
+  [key: `results?quizId=${string}&guestId=${string}`]: Result
 }

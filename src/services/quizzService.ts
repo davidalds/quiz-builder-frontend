@@ -78,7 +78,7 @@ export const getQuizResult = async (
   guestId: string,
 ): Promise<Result> => {
   const { data } = await fetchQuiz.fetch(
-    `quizzes/${id}/answers?guestId=${guestId}`,
+    `results?quizId=${id}&guestId=${guestId}`,
     'get',
   )
   return data

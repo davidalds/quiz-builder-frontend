@@ -1,4 +1,4 @@
-import { Pencil, Plus, Trash } from 'lucide-react'
+import { Info, Pencil, Plus, Trash } from 'lucide-react'
 import CreateQuiz from './createQuiz'
 import { TableCell, TableRow } from '@/components/ui/table'
 import { useUserQuizzes } from '@/hooks/quizzServiceHooks'
@@ -17,6 +17,7 @@ import { useIsMobile } from '@/hooks/use-mobile'
 import sliceLongText from '@/utils/sliceLongText'
 import TableComponent from '@/components/ui/tableComponent'
 import Search from '@/components/ui/search'
+import InfoQuiz from './infoQuiz'
 
 function QuizPageDashboard() {
   const limit = 15
@@ -116,38 +117,61 @@ function QuizPageDashboard() {
                 ))}
               </TableRow>
             ) : (
-              data?.data.map(({ id: quizId, title }) => (
-                <TableRow key={quizId}>
-                  <TableCell>{quizId}</TableCell>
-                  <TableCell>
-                    {sliceLongText({ txt: title, sliceLength: 20 })}
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex gap-2">
-                      <DialogComponent
-                        btnTriggerIcon={Pencil}
-                        btnTriggerText={!isMobile ? 'Editar' : ''}
-                        btnVariant={'secondary'}
-                      >
-                        <EditQuiz
-                          quizId={String(quizId)}
-                          submitQuiz={handleEditQuiz}
-                        />
-                      </DialogComponent>
-                      <DialogComponent
-                        btnTriggerIcon={Trash}
-                        btnTriggerText={!isMobile ? 'Excluir' : ''}
-                        btnVariant={'destructive'}
-                      >
-                        <ConfirmDialog
-                          title="Confirmar Exclusão do Quiz?"
-                          confirmCallback={() => handleDeleteQuiz(quizId)}
-                        />
-                      </DialogComponent>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))
+              data?.data.map(
+                ({
+                  id: quizId,
+                  title,
+                  description,
+                  createdAt,
+                  updatedAt,
+                  _count: { Result },
+                }) => (
+                  <TableRow key={quizId}>
+                    <TableCell>{quizId}</TableCell>
+                    <TableCell>
+                      {sliceLongText({ txt: title, sliceLength: 20 })}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex gap-2">
+                        <DialogComponent
+                          btnTriggerIcon={Info}
+                          btnTriggerText={!isMobile ? 'Informação' : ''}
+                          btnVariant={'outline'}
+                        >
+                          <InfoQuiz
+                            id={quizId}
+                            title={title}
+                            description={description}
+                            createdAt={createdAt}
+                            updatedAt={updatedAt}
+                            result={Result}
+                          />
+                        </DialogComponent>
+                        <DialogComponent
+                          btnTriggerIcon={Pencil}
+                          btnTriggerText={!isMobile ? 'Editar' : ''}
+                          btnVariant={'secondary'}
+                        >
+                          <EditQuiz
+                            quizId={String(quizId)}
+                            submitQuiz={handleEditQuiz}
+                          />
+                        </DialogComponent>
+                        <DialogComponent
+                          btnTriggerIcon={Trash}
+                          btnTriggerText={!isMobile ? 'Excluir' : ''}
+                          btnVariant={'destructive'}
+                        >
+                          <ConfirmDialog
+                            title="Confirmar Exclusão do Quiz?"
+                            confirmCallback={() => handleDeleteQuiz(quizId)}
+                          />
+                        </DialogComponent>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ),
+              )
             )}
           </TableComponent>
           <PaginationComponent

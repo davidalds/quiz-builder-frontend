@@ -21,7 +21,7 @@ export interface Dashboard {
 
 export interface ResponseQuizzes {
   total: number
-  data: Quiz[]
+  data: (Quiz & { _count: { Result: number } })[]
 }
 
 export interface ResponseInfiniteQuizzes extends ResponseQuizzes {
