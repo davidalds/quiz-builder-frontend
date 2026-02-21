@@ -67,7 +67,11 @@ function CardsHome({
       </div>
       <div className="flex justify-center mt-6">
         {hasNextPage ? (
-          <Button disabled={isFetchingNextPage} onClick={fetchNextPage}>
+          <Button
+            variant={'secondary'}
+            disabled={isFetchingNextPage}
+            onClick={fetchNextPage}
+          >
             {isFetchingNextPage ? <Spinner /> : 'Carregar Mais'}
           </Button>
         ) : (
