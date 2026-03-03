@@ -24,7 +24,7 @@ export const useInfinityQuizzes = (search: string) => {
 
 export const useInfinityPopularQuizzes = () => {
   return useInfiniteQuery({
-    queryKey: ['quizzes/popular'],
+    queryKey: ['quizzes', 'popular'],
     queryFn: getPopularQuizzes,
     initialPageParam: 0,
     getNextPageParam: (lastPage) => lastPage.nextCursor,

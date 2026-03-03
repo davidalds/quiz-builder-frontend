@@ -67,7 +67,7 @@ function PublicHome() {
             fetchNextPage={fetchNextPage}
           />
         ) : (
-          <AlertComponent title="Nenhum quizz encontrado!" alertType={'info'}>
+          <AlertComponent title="Nenhum quiz encontrado!" alertType={'info'}>
             Não foi possível encontrar nenhum quiz.
           </AlertComponent>
         )}
@@ -92,7 +92,7 @@ function PublicHome() {
             fetchNextPage={fetchNextPagePopularQuizzes}
           />
         ) : (
-          <AlertComponent title="Nenhum quizz encontrado!" alertType={'info'}>
+          <AlertComponent title="Nenhum quiz encontrado!" alertType={'info'}>
             Não foi possível encontrar nenhum quiz.
           </AlertComponent>
         )}
