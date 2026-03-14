@@ -55,7 +55,7 @@ function CardsHome({
                     asChild
                     className={`${isMobile ? 'w-[100%]' : ''}`}
                   >
-                    <Link to={`quiz/${id}`}>Acessar</Link>
+                    <Link to={`/quiz/${id}`}>Acessar</Link>
                   </Button>
                 </CardFooter>
               </Card>

@@ -3,7 +3,7 @@ import CreateQuiz from './createQuiz'
 import { TableCell, TableRow } from '@/components/ui/table'
 import { useUserQuizzes } from '@/hooks/quizzServiceHooks'
 import PaginationComponent from '../components/ui/paginationComponent'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { api } from '@/services'
 import type { QuizSubmit } from '@/types/quizzes'
 import { useQueryClient } from '@tanstack/react-query'
@@ -18,19 +18,31 @@ import sliceLongText from '@/utils/sliceLongText'
 import TableComponent from '@/components/ui/tableComponent'
 import Search from '@/components/ui/search'
 import InfoQuiz from './infoQuiz'
+import { SelectGroup, SelectItem, SelectLabel } from '@/components/ui/select'
+import { useCategory } from '@/hooks/categoryServiceHooks'
+import SelectComponent from '@/components/ui/SelectComponent'
 
 function QuizPageDashboard() {
   const limit = 15
   const [offset, setOffset] = useState<number>(0)
   const [search, setSearch] = useState<string>('')
+  const [categoryValue, setCategoryValue] = useState<string>('')
+  const [category, setCategory] = useState<string>('')
   const { data, isLoading, isError, isRefetching } = useUserQuizzes(
     offset * limit,
     limit,
+    category,
     search,
   )
+  const { data: categories } = useCategory()
   const isMobile = useIsMobile()
 
   const queryClient = useQueryClient()
+
+  const resetQueries = useCallback(
+    () => queryClient.invalidateQueries({ queryKey: ['user_quizzes'] }),
+    [queryClient],
+  )
 
   const handleOffset = (page: number) => {
     setOffset(page - 1)
@@ -39,7 +51,7 @@ function QuizPageDashboard() {
   const submitQuiz = async (data: QuizSubmit) => {
     try {
       await api.post('quizzes', data)
-      queryClient.invalidateQueries({ queryKey: ['user_quizzes'] })
+      resetQueries()
       toast.success('Quiz criado com sucesso!')
       return Promise.resolve()
     } catch (error) {
@@ -51,6 +63,7 @@ function QuizPageDashboard() {
   const handleEditQuiz = async (quizId: number, data: QuizSubmit) => {
     try {
       await api.put(`quizzes/${quizId}`, data)
+      resetQueries()
       queryClient.invalidateQueries({ queryKey: ['user_quizzes', quizId] })
       toast.success('Quiz editado com sucesso!')
       return Promise.resolve()
@@ -63,7 +76,7 @@ function QuizPageDashboard() {
   const handleDeleteQuiz = async (quizId: number) => {
     try {
       await api.delete(`quizzes/${quizId}`)
-      queryClient.invalidateQueries({ queryKey: ['user_quizzes'] })
+      resetQueries()
       toast.success('Quiz excluido com sucesso!')
       return Promise.resolve()
     } catch (error) {
@@ -72,9 +85,19 @@ function QuizPageDashboard() {
     }
   }
 
+  const resetSearch = () => {
+    setSearch('')
+    setCategory('')
+  }
+
+  const handleSearch = (value: string) => {
+    setSearch(value)
+    setCategory(categoryValue)
+  }
+
   useEffect(() => {
-    queryClient.invalidateQueries({ queryKey: ['user_quizzes'] })
-  }, [search, queryClient])
+    resetQueries()
+  }, [search, category, queryClient, resetQueries])
 
   return (
     <div className="py-3">
@@ -97,20 +120,36 @@ function QuizPageDashboard() {
               <CreateQuiz submitQuiz={submitQuiz} />
             </DialogComponent>
           </div>
-          <div className="my-2">
+          <div className="my-2 flex gap-2">
             <Search
-              submitSearch={setSearch}
+              submitSearch={handleSearch}
+              resetSearch={resetSearch}
               isSearching={isRefetching}
               placeholder={'Título do Quiz'}
+              selectors={
+                <SelectComponent
+                  defaultValue="Selecione Categoria"
+                  changeValue={setCategoryValue}
+                >
+                  <SelectGroup>
+                    <SelectLabel>Categorias</SelectLabel>
+                    {categories?.map(({ title, slug }) => (
+                      <SelectItem key={slug} value={slug}>
+                        {title}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectComponent>
+              }
             />
           </div>
           <TableComponent
-            headers={['id', 'Título', 'Ações']}
+            headers={['id', 'Título', 'Categoria(s)', 'Ações']}
             caption="Quizzes Criados Por Você"
           >
             {isLoading ? (
               <TableRow>
-                {Array.from({ length: 2 }).map((_, index) => (
+                {Array.from({ length: 3 }).map((_, index) => (
                   <TableCell key={index}>
                     <SkeletonContent numberLines={limit} lineH={4} />
                   </TableCell>
@@ -124,12 +163,19 @@ function QuizPageDashboard() {
                   description,
                   createdAt,
                   updatedAt,
-                  _count: { Result },
+                  categories,
+                  _count: { results },
                 }) => (
                   <TableRow key={quizId}>
                     <TableCell>{quizId}</TableCell>
                     <TableCell>
                       {sliceLongText({ txt: title, sliceLength: 20 })}
+                    </TableCell>
+                    <TableCell>
+                      {sliceLongText({
+                        txt: categories.map(({ title }) => title).join(';'),
+                        sliceLength: 30,
+                      })}
                     </TableCell>
                     <TableCell>
                       <div className="flex gap-2">
@@ -144,7 +190,10 @@ function QuizPageDashboard() {
                             description={description}
                             createdAt={createdAt}
                             updatedAt={updatedAt}
-                            result={Result}
+                            result={results}
+                            categories={categories
+                              .map(({ title }) => title)
+                              .join(';')}
                           />
                         </DialogComponent>
                         <DialogComponent

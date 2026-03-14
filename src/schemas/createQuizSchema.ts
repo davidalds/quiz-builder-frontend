@@ -13,6 +13,13 @@ export const quizSchema = z.object({
       error: 'Descrição do quiz deve ter no mínimo 5 caracteres',
     })
     .trim(),
+  categories: z
+    .array(
+      z.object({
+        slug: z.string().min(1, { error: 'Quiz deve ter uma categoria' }),
+      }),
+    )
+    .nonempty('O quiz deve ter uma ou mais categorias'),
   questions: z
     .array(
       z.object({

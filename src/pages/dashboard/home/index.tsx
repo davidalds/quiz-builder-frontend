@@ -6,7 +6,7 @@ import { useDashboardData, useUserQuizzes } from '@/hooks/quizzServiceHooks'
 import TableComponent from '@/components/ui/tableComponent'
 
 function DashboardHome() {
-  const { data } = useUserQuizzes(0, 5, '')
+  const { data } = useUserQuizzes(0, 5, '', '')
   const { data: dashboardData } = useDashboardData()
 
   return (

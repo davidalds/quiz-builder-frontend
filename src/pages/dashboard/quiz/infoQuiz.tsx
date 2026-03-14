@@ -16,6 +16,7 @@ interface InfoQuizProps {
   createdAt: string
   updatedAt: string
   result: number
+  categories: string
 }
 
 function InfoQuiz({
@@ -25,6 +26,7 @@ function InfoQuiz({
   createdAt,
   updatedAt,
   result,
+  categories,
 }: InfoQuizProps) {
   return (
     <>
@@ -38,13 +40,19 @@ function InfoQuiz({
             <Input readOnly value={id} />
           </Field>
           <Field>
-            <FieldLabel>Título da Questão</FieldLabel>
+            <FieldLabel>Título</FieldLabel>
             <Input readOnly value={title} />
           </Field>
         </FieldGroup>
         <FieldGroup className="grid grid-cols-1 gap-2">
           <Field>
-            <FieldLabel>Título da Questão</FieldLabel>
+            <FieldLabel>Categorias</FieldLabel>
+            <Input readOnly value={categories} />
+          </Field>
+        </FieldGroup>
+        <FieldGroup className="grid grid-cols-1 gap-2">
+          <Field>
+            <FieldLabel>Descrição</FieldLabel>
             <Textarea readOnly value={description} />
           </Field>
         </FieldGroup>

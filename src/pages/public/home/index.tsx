@@ -6,11 +6,11 @@ import {
 import AlertComponent from '@/components/ui/alertComponent'
 import Section from '@/components/ui/section'
 import { ListPlus, ArrowUpNarrowWide } from 'lucide-react'
-import Intro from '../components/ui/intro'
 import { Spinner } from '@/components/ui/spinner'
 import Search from '@/components/ui/search'
 import { useEffect, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
+import HomeIntro from '../components/ui/homeIntro'
 
 function PublicHome() {
   const [search, setSearch] = useState<string>('')
@@ -31,7 +31,16 @@ function PublicHome() {
     hasNextPage: hasPopularQuizzesNextPage,
     isFetchingNextPage: isFetchingPopularQuizzesNextPage,
     isError: isErrorPopularQuizzes,
+    isRefetching: isRefetchingPopularQuizzes,
   } = useInfinityPopularQuizzes()
+
+  const resetSearch = () => {
+    setSearch('')
+  }
+
+  const handleSearch = (value: string) => {
+    setSearch(value)
+  }
 
   useEffect(() => {
     queryClient.invalidateQueries({ queryKey: ['quizzes'] })
@@ -39,16 +48,20 @@ function PublicHome() {
 
   return (
     <>
-      <Intro />
+      <HomeIntro>
+        <span>Crie Para Qualquer Um</span>
+        <span>Responda Para Qualquer Um</span>
+      </HomeIntro>
       <Section title="Quizzes Mais Recentes" icon={ListPlus}>
         <div className="mb-4">
           <Search
             isSearching={isRefetching}
-            submitSearch={setSearch}
+            submitSearch={handleSearch}
+            resetSearch={resetSearch}
             placeholder={'Título do Quiz ou Nome do Usuário'}
           />
         </div>
-        {isLoading ? (
+        {isLoading || isRefetching ? (
           <div className="flex justify-center content-center">
             <Spinner className="size-8" />
           </div>
@@ -73,7 +86,7 @@ function PublicHome() {
         )}
       </Section>
       <Section title="Quizzes Mais Populares" icon={ArrowUpNarrowWide}>
-        {isPopularQuizzesLoading ? (
+        {isPopularQuizzesLoading || isRefetchingPopularQuizzes ? (
           <div className="flex justify-center content-center">
             <Spinner className="size-8" />
           </div>

@@ -31,14 +31,28 @@ export const useInfinityPopularQuizzes = () => {
   })
 }
 
+export const useInfinityCategoriesQuizzes = (
+  search: string,
+  category?: string,
+) => {
+  return useInfiniteQuery({
+    queryKey: ['quizzes', 'categories'],
+    queryFn: ({ pageParam }) =>
+      getNewestsQuizzes({ pageParam, search, category }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
+  })
+}
+
 export const useUserQuizzes = (
   offset: number,
   limit: number,
+  category: string,
   search: string,
 ) => {
   return useQuery({
-    queryKey: ['user_quizzes', offset],
-    queryFn: () => getUserQuizzes(offset, limit, search),
+    queryKey: ['user_quizzes'],
+    queryFn: () => getUserQuizzes(offset, limit, category, search),
     placeholderData: keepPreviousData,
   })
 }

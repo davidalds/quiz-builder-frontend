@@ -18,6 +18,8 @@ import FormInput from '../components/ui/formInput'
 import FormSelect from '../components/ui/formSelect'
 import { Spinner } from '@/components/ui/spinner'
 import React from 'react'
+import MultiSelect from '../components/ui/multiSelect'
+import { useCategory } from '@/hooks/categoryServiceHooks'
 
 interface IProps {
   submitQuiz: (data: QuizSubmit) => Promise<void>
@@ -35,6 +37,7 @@ const defaultQuestionValues: QuestionValues = {
 }
 
 function CreateQuiz({ submitQuiz }: IProps) {
+  const { data: categories } = useCategory()
   const form = useForm<quizFormType>({
     resolver: zodResolver(quizSchema),
   })
@@ -131,6 +134,11 @@ function CreateQuiz({ submitQuiz }: IProps) {
                     field={field}
                   />
                 )}
+              />
+              <MultiSelect
+                categories={categories}
+                changeFieldValue={(data) => form.setValue('categories', data)}
+                errorMessage={fieldErrors.categories?.message}
               />
               <Separator />
               <div className="flex justify-between items-center">

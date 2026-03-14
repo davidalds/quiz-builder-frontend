@@ -24,6 +24,8 @@ import FormInput from '../components/ui/formInput'
 import FormSelect from '../components/ui/formSelect'
 import { Spinner } from '@/components/ui/spinner'
 import React from 'react'
+import MultiSelect from '../components/ui/multiSelect'
+import { useCategory } from '@/hooks/categoryServiceHooks'
 
 interface IProps {
   quizId: string
@@ -43,6 +45,7 @@ const defaultQuestionValues: QuestionValuesEdit = {
 }
 
 function EditQuiz({ quizId, submitQuiz }: IProps) {
+  const { data: categories } = useCategory()
   const { data, isLoading } = useQuizByUser(quizId)
 
   const form = useForm<editQuizFormType>({
@@ -63,12 +66,13 @@ function EditQuiz({ quizId, submitQuiz }: IProps) {
 
   useEffect(() => {
     if (data && form.getValues('questions').length === 0) {
-      const { title, description, questions } = data
+      const { title, description, questions, categories } = data
 
       const obj = {
         title,
         description,
         questions,
+        categories,
       }
 
       const arr = Object.entries(obj) as Array<Entry<typeof obj>>
@@ -173,6 +177,12 @@ function EditQuiz({ quizId, submitQuiz }: IProps) {
                       field={field}
                     />
                   )}
+                />
+                <MultiSelect
+                  defaultValues={data?.categories}
+                  categories={categories}
+                  changeFieldValue={(data) => form.setValue('categories', data)}
+                  errorMessage={fieldErrors.categories?.message}
                 />
                 <Separator />
                 <div className="flex justify-between items-center">

@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/sidebar'
 import { QuizBuilderLogo } from '@/icons/quizBuilderLogo'
 import {
+  ArrowLeft,
   FileQuestionMark,
   House,
   LogOut,
@@ -40,6 +41,12 @@ const appLinks: appLinksType[] = [
     url: 'quizzes',
     icon: FileQuestionMark,
     locationName: 'quizzes',
+  },
+  {
+    linkName: 'Área Pública',
+    url: '/',
+    icon: ArrowLeft,
+    locationName: '',
   },
 ]
 

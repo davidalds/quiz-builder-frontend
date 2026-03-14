@@ -1,3 +1,4 @@
+import type { Category } from './categories'
 import type { User } from './user'
 
 export interface Quiz {
@@ -7,6 +8,7 @@ export interface Quiz {
   createdAt: string
   updatedAt: string
   User: Pick<User, 'name'>
+  categories: Category[]
 }
 
 export interface Dashboard {
@@ -14,14 +16,14 @@ export interface Dashboard {
   totalAnsweredQuizzes: number
   mostAnsweredQuiz?: Quiz & {
     _count: {
-      Result: number
+      results: number
     }
   }
 }
 
 export interface ResponseQuizzes {
   total: number
-  data: (Quiz & { _count: { Result: number } })[]
+  data: (Quiz & { _count: { results: number } })[]
 }
 
 export interface ResponseInfiniteQuizzes extends ResponseQuizzes {
@@ -80,6 +82,7 @@ export interface ResponseQuiz {
   description: string
   User: User
   questions: QuestionResponse[]
+  categories: Category[]
 }
 
 export type sendAnswerType = {

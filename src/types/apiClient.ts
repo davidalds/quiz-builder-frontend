@@ -1,3 +1,4 @@
+import type { Category } from './categories'
 import type {
   Dashboard,
   ResponseInfiniteQuizzes,
@@ -16,4 +17,8 @@ export interface QuizAPI {
   [key: `quizzes/${number}`]: ResponseQuiz
   [key: `quizzes/user-quizzes/${number}`]: ResponseQuiz
   [key: `results?quizId=${string}&guestId=${string}`]: Result
+}
+
+export interface CategoryAPI {
+  'categories/': Category[]
 }
