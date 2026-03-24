@@ -4,7 +4,7 @@ import { Field } from './field'
 import { Input } from './input'
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { useIsMobile } from '@/hooks/use-mobile'
-import { Spinner } from './spinner'
+import FetchingButton from './fetchingButton'
 
 interface SearchProps {
   placeholder: string
@@ -57,20 +57,17 @@ function Search({
         value={searchText}
         onChange={(e) => setSearchText(e.target.value)}
       />
-      <Button
-        disabled={isSearching}
+      <FetchingButton
+        isFetching={isSearching}
         variant={'secondary'}
-        onClick={submit}
+        fetchingFunc={submit}
         ref={btnSubmitRef}
-      >
-        {isSearching ? (
-          <Spinner />
-        ) : (
+        buttonContent={
           <>
             <SearchIcon /> Pesquisar
           </>
-        )}
-      </Button>
+        }
+      />
       <Button onClick={resetSearch}>
         <RotateCcw />
       </Button>

@@ -26,6 +26,7 @@ import { Spinner } from '@/components/ui/spinner'
 import React from 'react'
 import MultiSelect from '../components/ui/multiSelect'
 import { useCategory } from '@/hooks/categoryServiceHooks'
+import FetchingButton from '@/components/ui/fetchingButton'
 
 interface IProps {
   quizId: string
@@ -292,16 +293,15 @@ function EditQuiz({ quizId, submitQuiz }: IProps) {
             Cancelar
           </Button>
         </DialogClose>
-        <Button
-          disabled={isSubmitting}
-          onClick={() => {
+        <FetchingButton
+          isFetching={isSubmitting}
+          fetchingFunc={() => {
             if (submitBtn.current) {
               submitBtn.current.click()
             }
           }}
-        >
-          {isSubmitting ? <Spinner /> : 'Confirmar'}
-        </Button>
+          buttonContent="Confirmar"
+        />
       </DialogFooter>
     </>
   )

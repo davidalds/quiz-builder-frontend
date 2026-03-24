@@ -16,6 +16,8 @@ import { toast } from 'react-toastify'
 import * as z from 'zod'
 import AuthContainer from './components/authContainer'
 import AuthHeader from './components/authHeader'
+import FetchingButton from '@/components/ui/fetchingButton'
+import { useState } from 'react'
 
 const registerSchema = z
   .object({
@@ -38,15 +40,19 @@ function RegisterPage() {
   })
   const errors = form.formState.errors
 
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
+
   const onSubmit = async ({ email, name, password }: registerFormType) => {
     try {
+      setIsSubmitting(true)
       await api.post('users', { email, name, password })
       navigate('/login')
       toast.success('Usuário criado com sucesso!')
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
-      toast('Ocorreu um erro ao cadastrar usuário!')
+      toast.error('Ocorreu um erro ao cadastrar usuário!')
     }
+    setIsSubmitting(false)
   }
 
   return (
@@ -141,7 +147,11 @@ function RegisterPage() {
               </FormItem>
             )}
           />
-          <Button type="submit">Cadastrar</Button>
+          <FetchingButton
+            type="submit"
+            buttonContent="Cadastrar"
+            isFetching={isSubmitting}
+          />
           <Button variant={'secondary'} asChild>
             <Link to={'/login'}>Ir para Login</Link>
           </Button>

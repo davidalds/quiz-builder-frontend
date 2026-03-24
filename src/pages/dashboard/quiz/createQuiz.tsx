@@ -16,10 +16,10 @@ import { formattedDataQuiz } from '@/utils/formattedDataQuiz'
 import AppendPlusButton from '../components/ui/appendPlusButton'
 import FormInput from '../components/ui/formInput'
 import FormSelect from '../components/ui/formSelect'
-import { Spinner } from '@/components/ui/spinner'
 import React from 'react'
 import MultiSelect from '../components/ui/multiSelect'
 import { useCategory } from '@/hooks/categoryServiceHooks'
+import FetchingButton from '@/components/ui/fetchingButton'
 
 interface IProps {
   submitQuiz: (data: QuizSubmit) => Promise<void>
@@ -247,16 +247,15 @@ function CreateQuiz({ submitQuiz }: IProps) {
             Cancelar
           </Button>
         </DialogClose>
-        <Button
-          disabled={isSubmitting}
-          onClick={() => {
+        <FetchingButton
+          isFetching={isSubmitting}
+          fetchingFunc={() => {
             if (submitBtn.current) {
               submitBtn.current.click()
             }
           }}
-        >
-          {isSubmitting ? <Spinner /> : 'Confirmar'}
-        </Button>
+          buttonContent="Confirmar"
+        />
       </DialogFooter>
     </>
   )

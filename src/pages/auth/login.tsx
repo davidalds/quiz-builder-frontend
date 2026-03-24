@@ -16,6 +16,8 @@ import { Link } from 'react-router'
 import { toast } from 'react-toastify'
 import AuthContainer from './components/authContainer'
 import AuthHeader from './components/authHeader'
+import FetchingButton from '@/components/ui/fetchingButton'
+import { useState } from 'react'
 
 export default function LoginPage() {
   const form = useForm<loginType>({
@@ -24,14 +26,18 @@ export default function LoginPage() {
   const errors = form.formState.errors
   const auth = useAuth()
 
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
+
   const onSubmit = async (data: loginType) => {
     try {
+      setIsSubmitting(true)
       await auth.signIn(data)
       toast.success('Login efetuado com sucesso!')
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       toast.error('E-mail ou senha incorretos!')
     }
+    setIsSubmitting(false)
   }
 
   return (
@@ -85,7 +91,11 @@ export default function LoginPage() {
               </FormItem>
             )}
           />
-          <Button type="submit">Entrar</Button>
+          <FetchingButton
+            type="submit"
+            buttonContent="Entrar"
+            isFetching={isSubmitting}
+          />
           <Button variant={'secondary'} asChild>
             <Link to={'/register'}>Criar Conta</Link>
           </Button>
