@@ -1,7 +1,7 @@
 export type userType = {
   id: number
   email: string
-  name: string
+  nome: string
 }
 
 export type loginType = {

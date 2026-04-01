@@ -57,10 +57,10 @@ export const useUserQuizzes = (
   })
 }
 
-export const useQuiz = (id: string) => {
+export const useQuiz = (id: number) => {
   return useQuery({
     queryKey: ['quiz', id],
-    queryFn: () => getQuiz(+id),
+    queryFn: () => getQuiz(id),
     enabled: !!id,
   })
 }
@@ -73,11 +73,11 @@ export const useQuizByUser = (id: string) => {
   })
 }
 
-export const useQuizResult = (id: string, guestId: string) => {
+export const useQuizResult = (id: number, guestId: string) => {
   return useQuery({
     queryKey: ['quiz_result', id],
-    queryFn: () => getQuizResult(+id, guestId),
-    enabled: !!id && !!guestId,
+    queryFn: () => getQuizResult(id, guestId),
+    enabled: !!id,
   })
 }
 

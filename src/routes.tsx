@@ -10,6 +10,7 @@ import LoginPage from './pages/auth/login'
 import RequireAuth from './auth/requireAuth'
 import RegisterPage from './pages/auth/register'
 import HomeCategories from './pages/public/home/homeCategories'
+import Profile from './pages/public/components/profile'
 
 const router = createBrowserRouter([
   {
@@ -38,6 +39,14 @@ const router = createBrowserRouter([
         path: 'quiz/:id',
         Component: QuizPage,
         errorElement: <ErrorBoundaryFallback />,
+      },
+      {
+        path: 'profile',
+        element: (
+          <RequireAuth>
+            <Profile />
+          </RequireAuth>
+        ),
       },
     ],
   },

@@ -95,9 +95,7 @@ export interface Result {
   userId: number
   quizId: number
   score: number
-  Quiz: {
-    questions: Question[]
-  }
+  questions: Question[]
 }
 
 interface AnswerInputValue {

@@ -1,4 +1,4 @@
-const DEFAULT_LENGTH = 10
+const DEFAULT_LENGTH = 30
 
 function sliceLongText({
   txt,

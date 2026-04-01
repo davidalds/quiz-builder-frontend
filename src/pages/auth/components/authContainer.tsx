@@ -2,8 +2,8 @@ import { useAuth } from '@/auth/useAuth'
 import { Button } from '@/components/ui/button'
 import { useTheme } from '@/theme/useTheme'
 import { House, Moon, Sun } from 'lucide-react'
-import type { ReactNode } from 'react'
-import { Link, Navigate, useLocation } from 'react-router'
+import { useEffect, type ReactNode } from 'react'
+import { Link, useNavigate, useSearchParams } from 'react-router'
 
 interface IProps {
   children: ReactNode
@@ -11,10 +11,20 @@ interface IProps {
 
 function AuthContainer({ children }: IProps) {
   const auth = useAuth()
-  const location = useLocation()
   const theme = useTheme()
-  return auth.isAuthenticated() ? (
-    <Navigate to={'/dashboard'} state={{ from: location }} replace={true} />
+  const navigate = useNavigate()
+  const isAuthenticated = auth.isAuthenticated()
+  const [searchParams] = useSearchParams()
+  const redirectUrl = searchParams.get('redirect')
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate(redirectUrl ?? '/')
+    }
+  }, [isAuthenticated, navigate, redirectUrl])
+
+  return isAuthenticated ? (
+    <></>
   ) : (
     <div className="flex justify-center items-center h-screen bg-background p-2">
       <div className="absolute top-0 left-0 p-2">

@@ -14,7 +14,8 @@ import {
 } from '@/components/ui/dialog'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
-import type { Result } from '@/types/quizzes'
+import { Spinner } from '@/components/ui/spinner'
+import { useQuizResult } from '@/hooks/quizzServiceHooks'
 
 interface IPropsItem {
   index: number
@@ -41,39 +42,51 @@ function Item({ index, questionText, answer }: IPropsItem) {
 }
 
 interface IProps {
-  score: number
-  Quiz: Result['Quiz']
+  quizId: number
+  guestId: string
 }
 
-function ResultDialog({ score, Quiz }: IProps) {
+function ResultDialog({ quizId, guestId }: IProps) {
+  const { data, isLoading } = useQuizResult(quizId, guestId)
+
   return (
     <>
       <DialogHeader>
         <DialogTitle>Resultado</DialogTitle>
       </DialogHeader>
       <ScrollArea className=" max-h-100 p-3">
-        <div className="flex justify-center py-4">
-          <h1 className="text-2xl text-primary">
-            Você acertou <span className="font-medium">{score}</span> de{' '}
-            <span className="font-medium">{Quiz.questions.length}</span>{' '}
-            questões!
-          </h1>
-        </div>
-        <Badge variant={'destructive'}>Gabarito</Badge>
-        <Separator className="my-2" />
-        <Accordion type="multiple">
-          {Quiz.questions.map(({ id, text, answers }, index) => (
-            <Item
-              key={id}
-              index={index + 1}
-              questionText={text}
-              answer={{
-                id: answers[0].id,
-                text: answers[0].text,
-              }}
-            />
-          ))}
-        </Accordion>
+        {isLoading ? (
+          <div className="flex justify-center py-4">
+            <Spinner className="size-8" />
+          </div>
+        ) : data ? (
+          <>
+            <div className="flex justify-center py-4">
+              <h1 className="text-2xl text-primary">
+                Você acertou <span className="font-medium">{data.score}</span>{' '}
+                de <span className="font-medium">{data.questions.length}</span>{' '}
+                questões!
+              </h1>
+            </div>
+            <Badge variant={'destructive'}>Gabarito</Badge>
+            <Separator className="my-2" />
+            <Accordion type="multiple">
+              {data.questions.map(({ id, text, answers }, index) => (
+                <Item
+                  key={id}
+                  index={index + 1}
+                  questionText={text}
+                  answer={{
+                    id: answers[0].id,
+                    text: answers[0].text,
+                  }}
+                />
+              ))}
+            </Accordion>
+          </>
+        ) : (
+          <></>
+        )}
       </ScrollArea>
       <DialogFooter>
         <DialogClose asChild>

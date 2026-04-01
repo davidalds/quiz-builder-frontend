@@ -11,7 +11,13 @@ const RequireAuth = ({ children }: IProps) => {
   const location = useLocation()
 
   if (!auth.isAuthenticated()) {
-    return <Navigate to={'/login'} state={{ from: location }} replace={true} />
+    return (
+      <Navigate
+        to={{ pathname: '/login', search: `?redirect=${location.pathname}` }}
+        state={{ from: location }}
+        replace={true}
+      />
+    )
   }
 
   return children

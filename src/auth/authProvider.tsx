@@ -15,7 +15,7 @@ export default function AuthProvider({ children }: IProps) {
   const defaultValues: userType = {
     id: 0,
     email: '',
-    name: '',
+    nome: '',
   }
   const queryClient = useQueryClient()
 
@@ -69,7 +69,7 @@ export default function AuthProvider({ children }: IProps) {
       const access_token = decodedToken()
       if (access_token) {
         const { id, name, email } = access_token
-        setUser({ id, name, email })
+        setUser({ id, nome: name, email })
       }
     }
   }, [isLoggedIn])

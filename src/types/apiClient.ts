@@ -6,6 +6,7 @@ import type {
   ResponseQuizzes,
   Result,
 } from './quizzes'
+import type { ResultQuizzes } from './result'
 
 export type methodsAPI = 'get' | 'post' | 'put' | 'patch' | 'delete'
 
@@ -21,4 +22,8 @@ export interface QuizAPI {
 
 export interface CategoryAPI {
   'categories/': Category[]
+}
+
+export interface ResultAPI {
+  'results/quizzes': ResultQuizzes
 }
