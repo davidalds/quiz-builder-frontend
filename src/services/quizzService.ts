@@ -5,9 +5,10 @@ import type {
   Result,
 } from '@/types/quizzes'
 import { FetchApi } from '@/utils/fetchApi'
-import type { QuizAPI } from '@/types/apiClient'
+import type { QuizAPI, QuizApiWithParams } from '@/types/apiClient'
 
 const fetchQuiz = new FetchApi<QuizAPI>()
+const fecthQuizWithParams = new FetchApi<QuizApiWithParams>()
 
 export const getUserQuizzes = async (
   offset: number,
@@ -33,7 +34,7 @@ export const getNewestsQuizzes = async ({
   search,
   category,
 }: {
-  pageParam: number
+  pageParam: string
   search: string
   category?: string
 }): Promise<ResponseInfiniteQuizzes> => {
@@ -54,7 +55,7 @@ export const getNewestsQuizzes = async ({
 export const getPopularQuizzes = async ({
   pageParam,
 }: {
-  pageParam: number
+  pageParam: string
 }): Promise<ResponseInfiniteQuizzes> => {
   const res = await fetchQuiz.fetch('quizzes/popular', 'get', {
     cursor: pageParam,
@@ -73,16 +74,16 @@ export const getDashboardData = async () => {
   return data
 }
 
-export const getQuiz = async (id: number): Promise<ResponseQuiz> => {
-  const { data } = await fetchQuiz.fetch(`quizzes/${id}`, 'get')
+export const getQuiz = async (id: string): Promise<ResponseQuiz> => {
+  const { data } = await fecthQuizWithParams.fetch(`quizzes/${id}`, 'get')
   return data
 }
 
 export const getQuizResult = async (
-  id: number,
+  id: string,
   guestId: string,
 ): Promise<Result> => {
-  const { data } = await fetchQuiz.fetch(
+  const { data } = await fecthQuizWithParams.fetch(
     `results?quizId=${id}&guestId=${guestId}`,
     'get',
   )
@@ -90,6 +91,9 @@ export const getQuizResult = async (
 }
 
 export const getQuizByUser = async (id: number): Promise<ResponseQuiz> => {
-  const { data } = await fetchQuiz.fetch(`quizzes/user-quizzes/${id}`, 'get')
+  const { data } = await fecthQuizWithParams.fetch(
+    `quizzes/user-quizzes/${id}`,
+    'get',
+  )
   return data
 }

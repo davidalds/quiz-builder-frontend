@@ -13,7 +13,7 @@ interface IProps {
 export default function AuthProvider({ children }: IProps) {
   const [isLoggedIn, setIsLoggegIn] = useState<boolean>(false)
   const defaultValues: userType = {
-    id: 0,
+    publicId: '',
     email: '',
     nome: '',
   }
@@ -68,8 +68,8 @@ export default function AuthProvider({ children }: IProps) {
     if (isLoggedIn) {
       const access_token = decodedToken()
       if (access_token) {
-        const { id, name, email } = access_token
-        setUser({ id, nome: name, email })
+        const { publicId, name, email } = access_token
+        setUser({ publicId, nome: name, email })
       }
     }
   }, [isLoggedIn])

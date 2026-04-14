@@ -1,5 +1,5 @@
 export type userType = {
-  id: number
+  publicId: string
   email: string
   nome: string
 }
@@ -11,6 +11,7 @@ export type loginType = {
 
 export type accessTokenType = {
   id: number
+  publicId: string
   email: string
   name: string
   exp: number

@@ -42,7 +42,7 @@ function Item({ index, questionText, answer }: IPropsItem) {
 }
 
 interface IProps {
-  quizId: number
+  quizId: string
   guestId: string
 }
 

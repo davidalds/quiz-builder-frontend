@@ -25,12 +25,11 @@ function Profile() {
       <CardProfile />
       <div>
         <TableComponent
-          headers={['Id', 'Título', 'Feito em', 'Refeito em', 'Ações']}
+          headers={['Título', 'Feito em', 'Refeito em', 'Ações']}
           caption="Histórico de quizzes respondidos por você"
         >
-          {data?.quizzes.map(({ id, title, done, redone }) => (
-            <TableRow key={id}>
-              <TableCell>{id}</TableCell>
+          {data?.quizzes.map(({ publicId, title, done, redone }) => (
+            <TableRow key={publicId}>
               <TableCell>
                 {sliceLongText({ txt: title, sliceLength: 30 })}
               </TableCell>
@@ -40,13 +39,13 @@ function Profile() {
               </TableCell>
               <TableCell className="flex gap-2">
                 <Button variant={'secondary'} asChild>
-                  <Link to={`/quiz/${id}`}>
+                  <Link to={`/quiz/${publicId}`}>
                     <ArrowRight />
                     Acessar
                   </Link>
                 </Button>
                 <DialogComponent btnTriggerText={'Ver Resultado'}>
-                  <ResultDialog quizId={id} guestId={''} />
+                  <ResultDialog quizId={publicId} guestId={''} />
                 </DialogComponent>
               </TableCell>
             </TableRow>

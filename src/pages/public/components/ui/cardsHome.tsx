@@ -36,30 +36,32 @@ function CardsHome({
       >
         {data !== undefined ? (
           data.pages.map((group) =>
-            group.data.map(({ id, title, description, User: { name } }) => (
-              <Card key={id} className="min-w-sm max-w-sm">
-                <CardHeader className="grow">
-                  <CardTitle>
-                    {sliceLongText({ txt: title, sliceLength: 50 })}
-                  </CardTitle>
-                  <CardDescription>
-                    {sliceLongText({ txt: description, sliceLength: 80 })}
-                  </CardDescription>
-                </CardHeader>
-                <CardFooter
-                  className={`${isMobile ? 'flex-col gap-3' : 'justify-between'}`}
-                >
-                  <Badge className="bg-accent">{name}</Badge>
-                  <Button
-                    variant={'secondary'}
-                    asChild
-                    className={`${isMobile ? 'w-[100%]' : ''}`}
+            group.data.map(
+              ({ publicId, title, description, User: { name } }) => (
+                <Card key={publicId} className="min-w-sm max-w-sm">
+                  <CardHeader className="grow">
+                    <CardTitle>
+                      {sliceLongText({ txt: title, sliceLength: 50 })}
+                    </CardTitle>
+                    <CardDescription>
+                      {sliceLongText({ txt: description, sliceLength: 80 })}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardFooter
+                    className={`${isMobile ? 'flex-col gap-3' : 'justify-between'}`}
                   >
-                    <Link to={`/quiz/${id}`}>Acessar</Link>
-                  </Button>
-                </CardFooter>
-              </Card>
-            )),
+                    <Badge className="bg-accent">{name}</Badge>
+                    <Button
+                      variant={'secondary'}
+                      asChild
+                      className={`${isMobile ? 'w-[100%]' : ''}`}
+                    >
+                      <Link to={`/quiz/${publicId}`}>Acessar</Link>
+                    </Button>
+                  </CardFooter>
+                </Card>
+              ),
+            ),
           )
         ) : (
           <></>

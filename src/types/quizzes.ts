@@ -3,6 +3,7 @@ import type { User } from './user'
 
 export interface Quiz {
   id: number
+  publicId: string
   title: string
   description: string
   createdAt: string
@@ -27,7 +28,7 @@ export interface ResponseQuizzes {
 }
 
 export interface ResponseInfiniteQuizzes extends ResponseQuizzes {
-  nextCursor: number | undefined
+  nextCursor: string | undefined
 }
 
 export interface QuizSubmit {

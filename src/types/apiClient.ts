@@ -15,7 +15,10 @@ export interface QuizAPI {
   'quizzes/popular': ResponseInfiniteQuizzes
   'quizzes/user-quizzes': ResponseQuizzes
   'quizzes/dashboard': Dashboard
-  [key: `quizzes/${number}`]: ResponseQuiz
+}
+
+export interface QuizApiWithParams {
+  [key: `quizzes/${string}`]: ResponseQuiz
   [key: `quizzes/user-quizzes/${number}`]: ResponseQuiz
   [key: `results?quizId=${string}&guestId=${string}`]: Result
 }

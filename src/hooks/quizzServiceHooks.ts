@@ -7,6 +7,7 @@ import {
   getQuizResult,
   getUserQuizzes,
 } from '@/services/quizzService'
+
 import {
   keepPreviousData,
   useInfiniteQuery,
@@ -17,7 +18,7 @@ export const useInfinityQuizzes = (search: string) => {
   return useInfiniteQuery({
     queryKey: ['quizzes'],
     queryFn: ({ pageParam }) => getNewestsQuizzes({ pageParam, search }),
-    initialPageParam: 0,
+    initialPageParam: '',
     getNextPageParam: (lastPage) => lastPage.nextCursor,
   })
 }
@@ -26,7 +27,7 @@ export const useInfinityPopularQuizzes = () => {
   return useInfiniteQuery({
     queryKey: ['quizzes', 'popular'],
     queryFn: getPopularQuizzes,
-    initialPageParam: 0,
+    initialPageParam: '',
     getNextPageParam: (lastPage) => lastPage.nextCursor,
   })
 }
@@ -39,7 +40,7 @@ export const useInfinityCategoriesQuizzes = (
     queryKey: ['quizzes', 'categories'],
     queryFn: ({ pageParam }) =>
       getNewestsQuizzes({ pageParam, search, category }),
-    initialPageParam: 0,
+    initialPageParam: '',
     getNextPageParam: (lastPage) => lastPage.nextCursor,
   })
 }
@@ -57,7 +58,7 @@ export const useUserQuizzes = (
   })
 }
 
-export const useQuiz = (id: number) => {
+export const useQuiz = (id: string) => {
   return useQuery({
     queryKey: ['quiz', id],
     queryFn: () => getQuiz(id),
@@ -73,7 +74,7 @@ export const useQuizByUser = (id: string) => {
   })
 }
 
-export const useQuizResult = (id: number, guestId: string) => {
+export const useQuizResult = (id: string, guestId: string) => {
   return useQuery({
     queryKey: ['quiz_result', id],
     queryFn: () => getQuizResult(id, guestId),
