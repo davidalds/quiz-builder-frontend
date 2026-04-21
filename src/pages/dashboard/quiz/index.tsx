@@ -18,7 +18,6 @@ import sliceLongText from '@/utils/sliceLongText'
 import TableComponent from '@/components/ui/tableComponent'
 import Search from '@/components/ui/search'
 import InfoQuiz from './infoQuiz'
-import { SelectGroup, SelectItem, SelectLabel } from '@/components/ui/select'
 import { useCategory } from '@/hooks/categoryServiceHooks'
 import SelectComponent from '@/components/ui/SelectComponent'
 
@@ -85,11 +84,6 @@ function QuizPageDashboard() {
     }
   }
 
-  const resetSearch = () => {
-    setSearch('')
-    setCategory('')
-  }
-
   const handleSearch = (value: string) => {
     setSearch(value)
     setCategory(categoryValue)
@@ -123,23 +117,19 @@ function QuizPageDashboard() {
           <div className="my-2 flex gap-2">
             <Search
               submitSearch={handleSearch}
-              resetSearch={resetSearch}
               isSearching={isRefetching}
               placeholder={'Título do Quiz'}
               selectors={
                 <SelectComponent
+                  label="Categorias"
                   defaultValue="Selecione Categoria"
+                  defaultItem={{ text: 'Todas', value: 'all' }}
                   changeValue={setCategoryValue}
-                >
-                  <SelectGroup>
-                    <SelectLabel>Categorias</SelectLabel>
-                    {categories?.map(({ title, slug }) => (
-                      <SelectItem key={slug} value={slug}>
-                        {title}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectComponent>
+                  items={categories?.map(({ title, slug }) => ({
+                    text: title,
+                    value: slug,
+                  }))}
+                />
               }
             />
           </div>

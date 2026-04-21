@@ -1,15 +1,13 @@
-import { RotateCcw, SearchIcon } from 'lucide-react'
-import { Button } from './button'
 import { Field } from './field'
 import { Input } from './input'
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { useIsMobile } from '@/hooks/use-mobile'
 import FetchingButton from './fetchingButton'
+import { SearchIcon } from 'lucide-react'
 
 interface SearchProps {
   placeholder: string
   submitSearch: (value: string) => void
-  resetSearch: () => void
   isSearching?: boolean
   selectors?: ReactNode | ReactNode[]
 }
@@ -17,7 +15,6 @@ interface SearchProps {
 function Search({
   placeholder,
   submitSearch,
-  resetSearch,
   isSearching = false,
   selectors,
 }: SearchProps) {
@@ -62,15 +59,8 @@ function Search({
         variant={'secondary'}
         fetchingFunc={submit}
         ref={btnSubmitRef}
-        buttonContent={
-          <>
-            <SearchIcon /> Pesquisar
-          </>
-        }
+        buttonContent={<SearchIcon />}
       />
-      <Button onClick={resetSearch}>
-        <RotateCcw />
-      </Button>
     </Field>
   )
 }

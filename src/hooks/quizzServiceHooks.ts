@@ -14,12 +14,14 @@ import {
   useQuery,
 } from '@tanstack/react-query'
 
-export const useInfinityQuizzes = (search: string) => {
+export const useInfinityQuizzes = (search: string, category?: string) => {
   return useInfiniteQuery({
     queryKey: ['quizzes'],
-    queryFn: ({ pageParam }) => getNewestsQuizzes({ pageParam, search }),
+    queryFn: ({ pageParam }) =>
+      getNewestsQuizzes({ pageParam, search, category }),
     initialPageParam: '',
     getNextPageParam: (lastPage) => lastPage.nextCursor,
+    refetchOnWindowFocus: false,
   })
 }
 
@@ -29,6 +31,7 @@ export const useInfinityPopularQuizzes = () => {
     queryFn: getPopularQuizzes,
     initialPageParam: '',
     getNextPageParam: (lastPage) => lastPage.nextCursor,
+    refetchOnWindowFocus: false,
   })
 }
 

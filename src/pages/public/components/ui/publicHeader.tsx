@@ -1,20 +1,16 @@
 import { Button } from '@/components/ui/button'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { useTheme } from '@/theme/useTheme'
-import { LogIn, Moon, Sun, User } from 'lucide-react'
+import { LogIn, Moon, Plus, Sun, User } from 'lucide-react'
 import LogoLink from './logoLink'
 import MenuMobile from './menuMobile'
 
 import {
   NavigationMenu,
-  NavigationMenuContent,
   NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
 } from '@/components/ui/navigation-menu'
 import { Link } from 'react-router'
-import { useCategory } from '@/hooks/categoryServiceHooks'
 import { useAuth } from '@/auth/useAuth'
 import {
   DropdownMenu,
@@ -28,7 +24,6 @@ import {
 function PublicHeader() {
   const theme = useTheme()
   const isMobile = useIsMobile()
-  const { data } = useCategory()
   const auth = useAuth()
 
   return (
@@ -41,21 +36,11 @@ function PublicHeader() {
           <>
             <NavigationMenuList>
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="bg-primary font-normal text-md">
-                  Categorias
-                </NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  {data?.map(({ title, slug }) => (
-                    <NavigationMenuLink key={slug} asChild>
-                      <Link to={`/${slug}`}>{title}</Link>
-                    </NavigationMenuLink>
-                  ))}
-                </NavigationMenuContent>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <NavigationMenuLink asChild>
-                  <Link to={'/dashboard'}>Criar Quiz</Link>
-                </NavigationMenuLink>
+                <Button variant={'ghost'} asChild>
+                  <Link to={'/dashboard'}>
+                    <Plus /> Criar Quiz
+                  </Link>
+                </Button>
               </NavigationMenuItem>
             </NavigationMenuList>
           </>

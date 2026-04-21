@@ -31,9 +31,7 @@ function CardsHome({
 
   return (
     <>
-      <div
-        className={`flex ${isMobile ? 'flex-col items-center' : 'flex-row'} justify-center flex-wrap gap-4`}
-      >
+      <div className={`flex flex-col items-center gap-4`}>
         {data !== undefined ? (
           data.pages.map((group) =>
             group.data.map(

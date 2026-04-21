@@ -4,14 +4,18 @@ import sliceLongText from '@/utils/sliceLongText'
 import { Separator } from '@/components/ui/separator'
 import { useDashboardData, useUserQuizzes } from '@/hooks/quizzServiceHooks'
 import TableComponent from '@/components/ui/tableComponent'
+import { useIsMobile } from '@/hooks/use-mobile'
 
 function DashboardHome() {
   const { data } = useUserQuizzes(0, 5, '', '')
   const { data: dashboardData } = useDashboardData()
+  const isMobile = useIsMobile()
 
   return (
     <div className="mt-3">
-      <div className="flex flex-wrap gap-3">
+      <div
+        className={`flex flex-wrap gap-3 ${isMobile ? 'justify-center' : ''}`}
+      >
         <DashboardCard
           cardTitle="Quizzes Criados por Você"
           cardContent={dashboardData ? dashboardData?.totalQuizzes : 0}
