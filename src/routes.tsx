@@ -9,7 +9,6 @@ import ErrorBoundaryFallback from './components/ui/errorBoundaryFallback'
 import LoginPage from './pages/auth/login'
 import RequireAuth from './auth/requireAuth'
 import RegisterPage from './pages/auth/register'
-import HomeCategories from './pages/public/home/homeCategories'
 import Profile from './pages/public/components/profile'
 
 const router = createBrowserRouter([
@@ -28,11 +27,6 @@ const router = createBrowserRouter([
       {
         index: true,
         Component: PublicHome,
-        errorElement: <ErrorBoundaryFallback />,
-      },
-      {
-        path: ':slug',
-        Component: HomeCategories,
         errorElement: <ErrorBoundaryFallback />,
       },
       {
