@@ -36,7 +36,7 @@ function PublicHome() {
     isFetchingNextPage: isFetchingPopularQuizzesNextPage,
     isError: isErrorPopularQuizzes,
     isRefetching: isRefetchingPopularQuizzes,
-  } = useInfinityPopularQuizzes()
+  } = useInfinityPopularQuizzes(search, category)
   const { data: categories } = useCategory()
 
   const handleSearch = (value: string) => {
@@ -57,26 +57,26 @@ function PublicHome() {
               <TabsTrigger value="new">Quizzes Recentes</TabsTrigger>
               <TabsTrigger value="popular">Quizzes Populares</TabsTrigger>
             </TabsList>
+            <div className="my-2">
+              <Search
+                isSearching={isRefetching}
+                submitSearch={handleSearch}
+                placeholder={'Título do Quiz ou Nome de Usuário'}
+                selectors={
+                  <SelectComponent
+                    label="Categorias"
+                    defaultValue="Selecione Categoria"
+                    defaultItem={{ text: 'Todas', value: 'all' }}
+                    changeValue={setCategoryValue}
+                    items={categories?.map(({ title, slug }) => ({
+                      text: title,
+                      value: slug,
+                    }))}
+                  />
+                }
+              />
+            </div>
             <TabsContent value="new">
-              <div className="mb-4">
-                <Search
-                  isSearching={isRefetching}
-                  submitSearch={handleSearch}
-                  placeholder={'Título do Quiz ou Nome de Usuário'}
-                  selectors={
-                    <SelectComponent
-                      label="Categorias"
-                      defaultValue="Selecione Categoria"
-                      defaultItem={{ text: 'Todas', value: 'all' }}
-                      changeValue={setCategoryValue}
-                      items={categories?.map(({ title, slug }) => ({
-                        text: title,
-                        value: slug,
-                      }))}
-                    />
-                  }
-                />
-              </div>
               {isLoading || isRefetching ? (
                 <div className="flex justify-center content-center">
                   <Spinner className="size-8" />

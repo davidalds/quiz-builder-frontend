@@ -25,10 +25,14 @@ export const useInfinityQuizzes = (search: string, category?: string) => {
   })
 }
 
-export const useInfinityPopularQuizzes = () => {
+export const useInfinityPopularQuizzes = (
+  search: string,
+  category?: string,
+) => {
   return useInfiniteQuery({
     queryKey: ['quizzes', 'popular'],
-    queryFn: getPopularQuizzes,
+    queryFn: ({ pageParam }) =>
+      getPopularQuizzes({ pageParam, search, category }),
     initialPageParam: '',
     getNextPageParam: (lastPage) => lastPage.nextCursor,
     refetchOnWindowFocus: false,

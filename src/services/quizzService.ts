@@ -54,12 +54,18 @@ export const getNewestsQuizzes = async ({
 
 export const getPopularQuizzes = async ({
   pageParam,
+  search,
+  category,
 }: {
   pageParam: string
+  search: string
+  category?: string
 }): Promise<ResponseInfiniteQuizzes> => {
   const res = await fetchQuiz.fetch('quizzes/popular', 'get', {
     cursor: pageParam,
     limit: 10,
+    search: search,
+    category: category,
   })
 
   return {
