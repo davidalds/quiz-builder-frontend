@@ -7,6 +7,7 @@ import {
   getQuizResult,
   getUserQuizzes,
 } from '@/services/quizzService'
+import type { QuizStatus } from '@/types/quizzes'
 
 import {
   keepPreviousData,
@@ -56,11 +57,12 @@ export const useUserQuizzes = (
   offset: number,
   limit: number,
   category: string,
+  status: QuizStatus | undefined,
   search: string,
 ) => {
   return useQuery({
     queryKey: ['user_quizzes'],
-    queryFn: () => getUserQuizzes(offset, limit, category, search),
+    queryFn: () => getUserQuizzes(offset, limit, category, status, search),
     placeholderData: keepPreviousData,
   })
 }

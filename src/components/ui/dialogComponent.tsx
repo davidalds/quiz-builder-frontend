@@ -2,17 +2,12 @@ import type { LucideIcon } from 'lucide-react'
 import { Button } from './button'
 import { Dialog, DialogContent, DialogTrigger } from './dialog'
 import type { ReactNode } from 'react'
+import type { btnColors } from '@/types/theme'
 
 interface IProps {
   btnTriggerIcon?: LucideIcon
   btnTriggerText: string
-  btnVariant?:
-    | 'link'
-    | 'default'
-    | 'destructive'
-    | 'outline'
-    | 'secondary'
-    | 'ghost'
+  btnVariant?: btnColors
   children: ReactNode
 }
 

@@ -1,4 +1,5 @@
 import type {
+  QuizStatus,
   ResponseInfiniteQuizzes,
   ResponseQuiz,
   ResponseQuizzes,
@@ -14,12 +15,14 @@ export const getUserQuizzes = async (
   offset: number,
   limit: number,
   category: string,
+  status: QuizStatus | undefined,
   search: string,
 ): Promise<ResponseQuizzes> => {
   const res = await fetchQuiz.fetch('quizzes/user-quizzes', 'get', {
     offset,
     limit,
     category,
+    status,
     search,
   })
 

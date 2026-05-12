@@ -12,6 +12,7 @@ import { Textarea } from '@/components/ui/textarea'
 interface InfoQuizProps {
   id: number
   title: string
+  status: string
   description: string
   createdAt: string
   updatedAt: string
@@ -22,6 +23,7 @@ interface InfoQuizProps {
 function InfoQuiz({
   id,
   title,
+  status,
   description,
   createdAt,
   updatedAt,
@@ -44,7 +46,11 @@ function InfoQuiz({
             <Input readOnly value={title} />
           </Field>
         </FieldGroup>
-        <FieldGroup className="grid grid-cols-1 gap-2">
+        <FieldGroup className="grid grid-cols-2 gap-2">
+          <Field>
+            <FieldLabel>Status</FieldLabel>
+            <Input readOnly value={status} />
+          </Field>
           <Field>
             <FieldLabel>Categorias</FieldLabel>
             <Input readOnly value={categories} />

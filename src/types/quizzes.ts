@@ -1,10 +1,13 @@
 import type { Category } from './categories'
 import type { User } from './user'
 
+export type QuizStatus = 'PRIVADO' | 'PUBLICO' | 'NAO_LISTADO'
+
 export interface Quiz {
   id: number
   publicId: string
   title: string
+  status: QuizStatus
   description: string
   createdAt: string
   updatedAt: string

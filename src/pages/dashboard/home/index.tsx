@@ -7,7 +7,7 @@ import TableComponent from '@/components/ui/tableComponent'
 import { useIsMobile } from '@/hooks/use-mobile'
 
 function DashboardHome() {
-  const { data } = useUserQuizzes(0, 5, '', '')
+  const { data } = useUserQuizzes(0, 5, '', undefined, '')
   const { data: dashboardData } = useDashboardData()
   const isMobile = useIsMobile()
 
