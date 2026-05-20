@@ -32,6 +32,7 @@ import SelectComponent from '@/components/ui/SelectComponent'
 import EditStatus from './editStatus'
 import type { btnColors } from '@/types/theme'
 import type { editStatusFormType } from '@/schemas/editStatusSchema'
+import { apiErrorsHandle } from '@/utils/apiErrorsHandle'
 
 function QuizPageDashboard() {
   const limit = 15
@@ -41,7 +42,7 @@ function QuizPageDashboard() {
   const [category, setCategory] = useState<string>('')
   const [statusValue, setStatusValue] = useState<QuizStatus | undefined>()
   const [status, setStatus] = useState<QuizStatus | undefined>()
-  const { data, isLoading, isError, isRefetching } = useUserQuizzes(
+  const { data, isLoading, isError, isRefetching, error } = useUserQuizzes(
     offset * limit,
     limit,
     category,
@@ -69,7 +70,7 @@ function QuizPageDashboard() {
       toast.success('Quiz criado com sucesso!')
       return Promise.resolve()
     } catch (error) {
-      toast.error('Ocorreu um erro ao criar quiz!')
+      toast.error(apiErrorsHandle(error))
       return Promise.reject(error)
     }
   }
@@ -82,7 +83,7 @@ function QuizPageDashboard() {
       toast.success('Quiz editado com sucesso!')
       return Promise.resolve()
     } catch (error) {
-      toast.error('Ocorreu um erro ao editar quiz!')
+      toast.error(apiErrorsHandle(error))
       return Promise.reject(error)
     }
   }
@@ -94,7 +95,7 @@ function QuizPageDashboard() {
       toast.success('Quiz excluido com sucesso!')
       return Promise.resolve()
     } catch (error) {
-      toast.error('Ocorreu um erro ao excluir quiz!')
+      toast.error(apiErrorsHandle(error))
       return Promise.reject(error)
     }
   }
@@ -109,7 +110,7 @@ function QuizPageDashboard() {
       toast.success('Status do quiz modificado com sucesso!')
       return Promise.resolve()
     } catch (error) {
-      toast.error('Ocorreu um erro ao modificar status do quiz!')
+      toast.error(apiErrorsHandle(error))
       return Promise.reject(error)
     }
   }
@@ -160,7 +161,7 @@ function QuizPageDashboard() {
           title="Não foi possível carregar os seus quizzes!"
           alertType={'error'}
         >
-          Ocorreu um erro ao carregar os seus quizzes
+          {error.message}
         </AlertComponent>
       ) : (
         <>

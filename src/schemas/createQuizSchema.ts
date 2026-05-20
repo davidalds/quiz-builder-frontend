@@ -3,20 +3,18 @@ import * as z from 'zod'
 export const quizSchema = z.object({
   title: z
     .string()
-    .min(5, {
-      error: 'Título do quiz deve ter no mínimo 5 caracteres',
-    })
-    .trim(),
+    .trim()
+    .min(3, 'Mínimo 3 caracteres')
+    .max(100, 'Máximo 100 caracteres'),
   description: z
     .string()
-    .min(5, {
-      error: 'Descrição do quiz deve ter no mínimo 5 caracteres',
-    })
-    .trim(),
+    .trim()
+    .min(10, 'Mínimo 10 caracteres')
+    .max(500, 'Máximo 500 caracteres'),
   categories: z
     .array(
       z.object({
-        slug: z.string().min(1, { error: 'Quiz deve ter uma categoria' }),
+        slug: z.string().min(1, 'Quiz deve ter uma categoria'),
       }),
     )
     .nonempty('O quiz deve ter uma ou mais categorias'),
@@ -25,19 +23,17 @@ export const quizSchema = z.object({
       z.object({
         text: z
           .string()
-          .min(5, {
-            error: 'Título da pergunta deve ter no mínimo 5 caracteres',
-          })
-          .trim(),
+          .trim()
+          .min(5, 'Mínimo 5 caracteres')
+          .max(300, 'Máximo 300 caracteres'),
         answers: z
           .array(
             z.object({
               text: z
                 .string()
-                .min(1, {
-                  error: 'Texto da resposta deve ter no mínimo 1 caractere',
-                })
-                .trim(),
+                .trim()
+                .min(1, 'Mínimo 1 caractere')
+                .max(150, 'Máximo 150 caracteres'),
               isCorrect: z.literal(['false', 'true']),
             }),
           )

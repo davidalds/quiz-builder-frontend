@@ -7,6 +7,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Separator } from '@/components/ui/separator'
 import SkeletonContent from '@/components/ui/skeletonContent'
 import type { Question, QuestionForm, sendAnswerType } from '@/types/quizzes'
+import { apiErrorsHandle } from '@/utils/apiErrorsHandle'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
@@ -108,7 +109,7 @@ function QuizArea({ questionsData, isLoading, submitAnswer }: IProps) {
         setQuestions(uncheckAllQuestions())
         toast.success('Resposta enviada com sucesso!')
       })
-      .catch(() => toast.error('Ocorreu um erro ao enviar respostas!'))
+      .catch((err) => toast.error(apiErrorsHandle(err)))
   }
 
   return (

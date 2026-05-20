@@ -13,7 +13,7 @@ import { useCookie } from '@/context/useCookie'
 function QuizPage() {
   const params = useParams()
   const { guestId } = useCookie()
-  const { data, isError, isLoading } = useQuiz(params.id!)
+  const { data, isError, isLoading, error } = useQuiz(params.id!)
   const { data: dataQuizResult } = useQuizResult(params.id!, guestId)
   const queryClient = useQueryClient()
 
@@ -39,7 +39,7 @@ function QuizPage() {
           title="Não foi possível carregar informações do quiz"
           alertType="error"
         >
-          Ocorreu um erro ao carregar informações do quiz
+          {error.message}
         </AlertComponent>
       ) : (
         <>

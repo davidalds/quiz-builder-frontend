@@ -89,8 +89,13 @@ function CreateQuiz({ submitQuiz }: IProps) {
   }
 
   useEffect(() => {
-    if (fieldErrors.questions) {
-      toast.error(fieldErrors.questions.message)
+    const questionsFieldErrors = fieldErrors.questions
+    if (questionsFieldErrors) {
+      toast.error(
+        questionsFieldErrors.root
+          ? questionsFieldErrors.root.message
+          : questionsFieldErrors.message,
+      )
     }
   }, [fieldErrors])
 
@@ -157,11 +162,12 @@ function CreateQuiz({ submitQuiz }: IProps) {
                   </Button>
                 </div>
               </div>
-              {fields.map((_, index) => (
-                <div className="flex flex-col gap-3 mt-2" key={index}>
+              {fields.map((field, index) => (
+                <div className="flex flex-col gap-3 mt-2" key={field.id}>
                   <div className="flex justify-between">
                     <Badge>Questão {index + 1}</Badge>
                     <Button
+                      type="button"
                       size={'icon'}
                       variant={'destructive'}
                       onClick={() => remove(index)}

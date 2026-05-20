@@ -7,6 +7,7 @@ import type {
 } from '@/types/quizzes'
 import { FetchApi } from '@/utils/fetchApi'
 import type { QuizAPI, QuizApiWithParams } from '@/types/apiClient'
+import { apiErrorsHandle } from '@/utils/apiErrorsHandle'
 
 const fetchQuiz = new FetchApi<QuizAPI>()
 const fecthQuizWithParams = new FetchApi<QuizApiWithParams>()
@@ -41,17 +42,21 @@ export const getNewestsQuizzes = async ({
   search: string
   category?: string
 }): Promise<ResponseInfiniteQuizzes> => {
-  const res = await fetchQuiz.fetch('quizzes/', 'get', {
-    cursor: pageParam,
-    limit: 10,
-    search: search,
-    category: category,
-  })
+  try {
+    const res = await fetchQuiz.fetch('quizzes/', 'get', {
+      cursor: pageParam,
+      limit: 10,
+      search: search,
+      category: category,
+    })
 
-  return {
-    total: res.data.total,
-    data: res.data.data,
-    nextCursor: res.data.nextCursor,
+    return {
+      total: res.data.total,
+      data: res.data.data,
+      nextCursor: res.data.nextCursor,
+    }
+  } catch (err) {
+    throw new Error(apiErrorsHandle(err))
   }
 }
 
@@ -64,17 +69,21 @@ export const getPopularQuizzes = async ({
   search: string
   category?: string
 }): Promise<ResponseInfiniteQuizzes> => {
-  const res = await fetchQuiz.fetch('quizzes/popular', 'get', {
-    cursor: pageParam,
-    limit: 10,
-    search: search,
-    category: category,
-  })
+  try {
+    const res = await fetchQuiz.fetch('quizzes/popular', 'get', {
+      cursor: pageParam,
+      limit: 10,
+      search: search,
+      category: category,
+    })
 
-  return {
-    total: res.data.total,
-    data: res.data.data,
-    nextCursor: res.data.nextCursor,
+    return {
+      total: res.data.total,
+      data: res.data.data,
+      nextCursor: res.data.nextCursor,
+    }
+  } catch (err) {
+    throw new Error(apiErrorsHandle(err))
   }
 }
 
@@ -84,8 +93,12 @@ export const getDashboardData = async () => {
 }
 
 export const getQuiz = async (id: string): Promise<ResponseQuiz> => {
-  const { data } = await fecthQuizWithParams.fetch(`quizzes/${id}`, 'get')
-  return data
+  try {
+    const { data } = await fecthQuizWithParams.fetch(`quizzes/${id}`, 'get')
+    return data
+  } catch (error) {
+    throw Error(apiErrorsHandle(error))
+  }
 }
 
 export const getQuizResult = async (
@@ -100,9 +113,13 @@ export const getQuizResult = async (
 }
 
 export const getQuizByUser = async (id: number): Promise<ResponseQuiz> => {
-  const { data } = await fecthQuizWithParams.fetch(
-    `quizzes/user-quizzes/${id}`,
-    'get',
-  )
-  return data
+  try {
+    const { data } = await fecthQuizWithParams.fetch(
+      `quizzes/user-quizzes/${id}`,
+      'get',
+    )
+    return data
+  } catch (err) {
+    throw new Error(apiErrorsHandle(err))
+  }
 }

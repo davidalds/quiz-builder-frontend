@@ -202,11 +202,12 @@ function EditQuiz({ quizId, submitQuiz }: IProps) {
                     </Button>
                   </div>
                 </div>
-                {fields.map(({ answers }, index) => (
-                  <div className="flex flex-col gap-3 mt-2" key={index}>
+                {fields.map((field, index) => (
+                  <div className="flex flex-col gap-3 mt-2" key={field.id}>
                     <div className="flex justify-between">
                       <Badge>Questão {index + 1}</Badge>
                       <Button
+                        type="button"
                         size={'icon'}
                         variant={'destructive'}
                         onClick={() => remove(index)}
@@ -230,7 +231,7 @@ function EditQuiz({ quizId, submitQuiz }: IProps) {
                         />
                       )}
                     />
-                    {answers.map((_, index2) => (
+                    {field.answers.map((_, index2) => (
                       <React.Fragment key={index2}>
                         <Badge variant={'secondary'}>Opção {index2 + 1}</Badge>
                         <div className={`flex flex-col gap-2`} key={index2}>

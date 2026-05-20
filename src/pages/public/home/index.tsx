@@ -27,6 +27,7 @@ function PublicHome() {
     isFetchingNextPage,
     isError,
     isRefetching,
+    error,
   } = useInfinityQuizzes(search, category)
   const {
     data: dataPopularQuizzes,
@@ -36,6 +37,7 @@ function PublicHome() {
     isFetchingNextPage: isFetchingPopularQuizzesNextPage,
     isError: isErrorPopularQuizzes,
     isRefetching: isRefetchingPopularQuizzes,
+    error: errorPopularQuizzes,
   } = useInfinityPopularQuizzes(search, category)
   const { data: categories } = useCategory()
 
@@ -86,7 +88,7 @@ function PublicHome() {
                   title="Não foi possível carregar quizzes!"
                   alertType={'error'}
                 >
-                  Ocorreu um erro ao carregar os quizzes!
+                  {error.message}
                 </AlertComponent>
               ) : data?.pages[0].total ? (
                 <CardsHome
@@ -114,7 +116,7 @@ function PublicHome() {
                   title="Não foi possível carregar quizzes!"
                   alertType={'error'}
                 >
-                  Ocorreu um erro ao carregar os quizzes!
+                  {errorPopularQuizzes.message}
                 </AlertComponent>
               ) : dataPopularQuizzes?.pages[0].total ? (
                 <CardsHome

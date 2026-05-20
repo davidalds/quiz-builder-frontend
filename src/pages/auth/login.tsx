@@ -18,6 +18,7 @@ import AuthContainer from './components/authContainer'
 import AuthHeader from './components/authHeader'
 import FetchingButton from '@/components/ui/fetchingButton'
 import { useState } from 'react'
+import { apiErrorsHandle } from '@/utils/apiErrorsHandle'
 
 export default function LoginPage() {
   const form = useForm<loginType>({
@@ -33,9 +34,8 @@ export default function LoginPage() {
       setIsSubmitting(true)
       await auth.signIn(data)
       toast.success('Login efetuado com sucesso!')
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
-      toast.error('E-mail ou senha incorretos!')
+    } catch (err) {
+      toast.error(apiErrorsHandle(err))
     }
     setIsSubmitting(false)
   }

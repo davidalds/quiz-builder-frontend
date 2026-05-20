@@ -13,25 +13,12 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router'
 import { toast } from 'react-toastify'
-import * as z from 'zod'
 import AuthContainer from './components/authContainer'
 import AuthHeader from './components/authHeader'
 import FetchingButton from '@/components/ui/fetchingButton'
 import { useState } from 'react'
-
-const registerSchema = z
-  .object({
-    email: z.email('Valor deve ser um e-mail').trim(),
-    name: z.string().min(1, 'Nome é Obrigatório').trim(),
-    password: z.string().min(1, 'Senha é Obrigatória').trim(),
-    confirmPassword: z.string().min(1, 'Campo é Obrigatório'),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    error: 'Senhas diferentes',
-    path: ['confirmPassword'],
-  })
-
-type registerFormType = z.infer<typeof registerSchema>
+import { apiErrorsHandle } from '@/utils/apiErrorsHandle'
+import { registerSchema, type registerFormType } from '@/schemas/registerSchema'
 
 function RegisterPage() {
   const navigate = useNavigate()
@@ -48,9 +35,8 @@ function RegisterPage() {
       await api.post('users', { email, name, password })
       navigate('/login')
       toast.success('Usuário criado com sucesso!')
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
-      toast.error('Ocorreu um erro ao cadastrar usuário!')
+      toast.error(apiErrorsHandle(err))
     }
     setIsSubmitting(false)
   }
