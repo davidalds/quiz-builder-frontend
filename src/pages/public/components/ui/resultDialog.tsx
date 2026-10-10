@@ -43,11 +43,10 @@ function Item({ index, questionText, answer }: IPropsItem) {
 
 interface IProps {
   quizId: string
-  guestId: string
 }
 
-function ResultDialog({ quizId, guestId }: IProps) {
-  const { data, isLoading } = useQuizResult(quizId, guestId)
+function ResultDialog({ quizId }: IProps) {
+  const { data, isLoading } = useQuizResult(quizId)
 
   return (
     <>

@@ -10,7 +10,7 @@ const RequireAuth = ({ children }: IProps) => {
   const auth = useAuth()
   const location = useLocation()
 
-  if (!auth.isAuthenticated()) {
+  if (!auth.isLoggedIn) {
     return (
       <Navigate
         to={{ pathname: '/login', search: `?redirect=${location.pathname}` }}

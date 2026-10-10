@@ -1,81 +1,66 @@
 import { useCallback, useEffect, useState, type ReactNode } from 'react'
 import { AuthContext } from './authContext'
-import type { accessTokenType, loginType, userType } from './types'
-import { jwtDecode } from 'jwt-decode'
+import type { loginType, userType } from './types'
 import Cookies from 'js-cookie'
 import { api } from '@/services'
 import { useQueryClient } from '@tanstack/react-query'
+import { logout, setLogoutHandler } from './auth-event'
 
 interface IProps {
   children: ReactNode
 }
 
 export default function AuthProvider({ children }: IProps) {
-  const [isLoggedIn, setIsLoggegIn] = useState<boolean>(false)
   const defaultValues: userType = {
     publicId: '',
     email: '',
-    nome: '',
+    name: '',
   }
   const queryClient = useQueryClient()
 
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(
+    Cookies.get('isLoggedIn') ? true : false,
+  )
   const [user, setUser] = useState<userType>(defaultValues)
 
-  const signIn = async ({ email, password }: loginType): Promise<string> => {
-    const {
-      data: { access_token },
-    } = await api.post<{ access_token: string }>('auth/login', {
-      email,
-      password,
-    })
-    Cookies.set('access_token', access_token)
-    setIsLoggegIn(true)
-    return access_token
+  const signIn = async ({ email, password }: loginType) => {
+    await api.post<{ access_token: string; refresh_token: string }>(
+      'auth/login',
+      {
+        email,
+        password,
+      },
+    )
+    Cookies.set('isLoggedIn', 'true')
+    setIsLoggedIn(true)
   }
 
-  const signOut = () => {
-    Cookies.remove('access_token')
+  const logoutHandler = useCallback(() => {
     queryClient.invalidateQueries()
-    setUser(defaultValues)
-    setIsLoggegIn(false)
-  }
+    setIsLoggedIn(false)
+    Cookies.remove('isLoggedIn')
+  }, [queryClient])
 
-  const decodedToken = (): accessTokenType | undefined => {
-    const access_token: string | undefined = Cookies.get('access_token')
-    if (access_token) {
-      return jwtDecode(access_token)
+  const isAuthenticated = useCallback(async () => {
+    try {
+      const { data: user } = await api.get<userType>('users/user')
+      setUser({
+        publicId: user.publicId,
+        email: user.email,
+        name: user.name,
+      })
+    } catch {
+      logout()
     }
-    return undefined
-  }
-
-  const isAuthenticated = useCallback((): boolean => {
-    const access_token = decodedToken()
-    if (access_token) {
-      if (Date.now() <= access_token.exp * 1000) {
-        return true
-      }
-    }
-    return false
   }, [])
 
   useEffect(() => {
-    if (isAuthenticated()) {
-      setIsLoggegIn(true)
-    }
-  }, [isAuthenticated])
-
-  useEffect(() => {
-    if (isLoggedIn) {
-      const access_token = decodedToken()
-      if (access_token) {
-        const { publicId, name, email } = access_token
-        setUser({ publicId, nome: name, email })
-      }
-    }
-  }, [isLoggedIn])
+    setLogoutHandler(logoutHandler)
+    isAuthenticated()
+  }, [logoutHandler, isAuthenticated])
 
   return (
-    <AuthContext.Provider value={{ user, signIn, signOut, isAuthenticated }}>
+    <AuthContext.Provider value={{ user, signIn, logout, isLoggedIn }}>
       {children}
     </AuthContext.Provider>
   )

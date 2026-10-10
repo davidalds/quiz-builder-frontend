@@ -1,7 +1,7 @@
 export type userType = {
   publicId: string
   email: string
-  nome: string
+  name: string
 }
 
 export type loginType = {
@@ -9,7 +9,7 @@ export type loginType = {
   password: string
 }
 
-export type accessTokenType = {
+export type AuthTokenType = {
   id: number
   publicId: string
   email: string
@@ -19,7 +19,7 @@ export type accessTokenType = {
 
 export type authType = {
   user: userType
-  signIn: (data: loginType) => void
-  signOut: () => void
-  isAuthenticated: () => boolean
+  signIn: (data: loginType) => Promise<void>
+  logout: () => void
+  isLoggedIn: boolean
 }

@@ -14,7 +14,7 @@ function QuizPage() {
   const params = useParams()
   const { guestId } = useCookie()
   const { data, isError, isLoading, error } = useQuiz(params.id!)
-  const { data: dataQuizResult } = useQuizResult(params.id!, guestId)
+  const { data: dataQuizResult } = useQuizResult(params.id!)
   const queryClient = useQueryClient()
 
   const submitAnswer = async (data: sendAnswerType[]): Promise<void> => {
@@ -50,7 +50,7 @@ function QuizPage() {
               title={'Você já respondeu a esse quiz!'}
             >
               <DialogComponent btnTriggerText={'Mostrar Resultado'}>
-                <ResultDialog quizId={params.id!} guestId={guestId} />
+                <ResultDialog quizId={params.id!} />
               </DialogComponent>
             </AlertComponent>
           ) : (

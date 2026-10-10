@@ -1,20 +1,44 @@
+import { logout } from '@/auth/auth-event'
 import Axios from 'axios'
-import Cookies from 'js-cookie'
 
 const api = Axios.create({
   baseURL: import.meta.env.VITE_API_URL,
+  withCredentials: true,
 })
 
 api.interceptors.request.use(
   (config) => {
-    const accessToken: string | undefined = Cookies.get('access_token')
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`
-    }
     return config
   },
   (err) => {
     return Promise.reject(err)
+  },
+)
+
+api.interceptors.response.use(
+  (response) => {
+    return response
+  },
+  async (error) => {
+    const config = error.config
+
+    if (
+      error.response?.status === 401 &&
+      !config._retry &&
+      config.url !== 'auth/refresh'
+    ) {
+      config._retry = true
+      try {
+        await api.post<{ access_token: string; refresh_token: string }>(
+          'auth/refresh',
+        )
+
+        return api(config)
+      } catch {
+        logout()
+      }
+    }
+    return Promise.reject(error)
   },
 )
 

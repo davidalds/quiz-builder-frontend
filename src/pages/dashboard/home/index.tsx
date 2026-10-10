@@ -5,56 +5,70 @@ import { Separator } from '@/components/ui/separator'
 import { useDashboardData, useUserQuizzes } from '@/hooks/quizzServiceHooks'
 import TableComponent from '@/components/ui/tableComponent'
 import { useIsMobile } from '@/hooks/use-mobile'
+import AlertComponent from '@/components/ui/alertComponent'
 
 function DashboardHome() {
   const { data } = useUserQuizzes(0, 5, '', undefined, '')
-  const { data: dashboardData } = useDashboardData()
+  const { data: dashboardData, isError, error } = useDashboardData()
   const isMobile = useIsMobile()
 
   return (
     <div className="mt-3">
-      <div
-        className={`flex flex-wrap gap-3 ${isMobile ? 'justify-center' : ''}`}
-      >
-        <DashboardCard
-          cardTitle="Quizzes Criados por Você"
-          cardContent={dashboardData ? dashboardData?.totalQuizzes : 0}
-        />
-        <DashboardCard
-          cardTitle="Respostas Obtidas"
-          cardContent={dashboardData ? dashboardData.totalAnsweredQuizzes : 0}
-        />
-        <DashboardCard
-          cardTitle="Seu Quiz Mais Popular"
-          cardContent={
-            dashboardData
-              ? dashboardData.mostAnsweredQuiz
-                ? sliceLongText({
-                    txt: dashboardData.mostAnsweredQuiz.title,
-                    sliceLength: 20,
-                  })
-                : ''
-              : ''
-          }
-        />
-      </div>
-      <Separator className="my-4" />
-      <div>
-        <TableComponent
-          headers={['id', 'Título', 'Data de Criação']}
-          caption="Quizzes Criados Por Você Recentemente"
+      {isError ? (
+        <AlertComponent
+          title="Não foi possível carregar a página inicial"
+          alertType={'error'}
         >
-          {data?.data.map(({ id, title, createdAt }) => (
-            <TableRow key={id}>
-              <TableCell>{id}</TableCell>
-              <TableCell>
-                {sliceLongText({ txt: title, sliceLength: 20 })}
-              </TableCell>
-              <TableCell>{new Date(createdAt).toLocaleString()}</TableCell>
-            </TableRow>
-          ))}
-        </TableComponent>
-      </div>
+          {error.message}
+        </AlertComponent>
+      ) : (
+        <>
+          <div
+            className={`flex flex-wrap gap-3 ${isMobile ? 'justify-center' : ''}`}
+          >
+            <DashboardCard
+              cardTitle="Quizzes Criados por Você"
+              cardContent={dashboardData ? dashboardData?.totalQuizzes : 0}
+            />
+            <DashboardCard
+              cardTitle="Respostas Obtidas"
+              cardContent={
+                dashboardData ? dashboardData.totalAnsweredQuizzes : 0
+              }
+            />
+            <DashboardCard
+              cardTitle="Seu Quiz Mais Popular"
+              cardContent={
+                dashboardData
+                  ? dashboardData.mostAnsweredQuiz
+                    ? sliceLongText({
+                        txt: dashboardData.mostAnsweredQuiz.title,
+                        sliceLength: 20,
+                      })
+                    : ''
+                  : ''
+              }
+            />
+          </div>
+          <Separator className="my-4" />
+          <div>
+            <TableComponent
+              headers={['id', 'Título', 'Data de Criação']}
+              caption="Quizzes Criados Por Você Recentemente"
+            >
+              {data?.data.map(({ id, title, createdAt }) => (
+                <TableRow key={id}>
+                  <TableCell>{id}</TableCell>
+                  <TableCell>
+                    {sliceLongText({ txt: title, sliceLength: 20 })}
+                  </TableCell>
+                  <TableCell>{new Date(createdAt).toLocaleString()}</TableCell>
+                </TableRow>
+              ))}
+            </TableComponent>
+          </div>
+        </>
+      )}
     </div>
   )
 }

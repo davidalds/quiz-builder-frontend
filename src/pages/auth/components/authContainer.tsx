@@ -13,7 +13,7 @@ function AuthContainer({ children }: IProps) {
   const auth = useAuth()
   const theme = useTheme()
   const navigate = useNavigate()
-  const isAuthenticated = auth.isAuthenticated()
+  const isAuthenticated = auth.isLoggedIn
   const [searchParams] = useSearchParams()
   const redirectUrl = searchParams.get('redirect')
 

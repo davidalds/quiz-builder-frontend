@@ -47,7 +47,7 @@ function PublicHeader() {
         )}
       </NavigationMenu>
       <div className="flex align-items">
-        {!auth.isAuthenticated() ? (
+        {!auth.isLoggedIn ? (
           <Button variant={'secondary'} asChild>
             <Link to={'/login'}>
               <LogIn />
@@ -59,7 +59,7 @@ function PublicHeader() {
             <DropdownMenuTrigger asChild>
               <Button variant={'secondary'}>
                 <User />
-                {auth.user.nome}
+                {auth.user.name}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
@@ -73,7 +73,7 @@ function PublicHeader() {
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
-                <DropdownMenuItem onClick={auth.signOut}>Sair</DropdownMenuItem>
+                <DropdownMenuItem onClick={auth.logout}>Sair</DropdownMenuItem>
               </DropdownMenuGroup>
             </DropdownMenuContent>
           </DropdownMenu>

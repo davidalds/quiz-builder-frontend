@@ -83,10 +83,10 @@ export const useQuizByUser = (id: string) => {
   })
 }
 
-export const useQuizResult = (id: string, guestId: string) => {
+export const useQuizResult = (id: string) => {
   return useQuery({
     queryKey: ['quiz_result', id],
-    queryFn: () => getQuizResult(id, guestId),
+    queryFn: () => getQuizResult(id),
     enabled: !!id,
   })
 }

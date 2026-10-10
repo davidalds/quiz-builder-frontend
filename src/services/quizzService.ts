@@ -101,12 +101,9 @@ export const getQuiz = async (id: string): Promise<ResponseQuiz> => {
   }
 }
 
-export const getQuizResult = async (
-  id: string,
-  guestId: string,
-): Promise<Result> => {
+export const getQuizResult = async (id: string): Promise<Result> => {
   const { data } = await fecthQuizWithParams.fetch(
-    `results?quizId=${id}&guestId=${guestId}`,
+    `results?quizId=${id}`,
     'get',
   )
   return data

@@ -45,7 +45,7 @@ function Profile() {
                   </Link>
                 </Button>
                 <DialogComponent btnTriggerText={'Ver Resultado'}>
-                  <ResultDialog quizId={publicId} guestId={''} />
+                  <ResultDialog quizId={publicId} />
                 </DialogComponent>
               </TableCell>
             </TableRow>

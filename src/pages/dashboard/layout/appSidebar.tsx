@@ -106,9 +106,9 @@ function AppSidebar() {
         <SidebarMenuItem>
           <SidebarMenuButton variant={'content'}>
             <User />
-            <span className="text-md font-medium">{auth.user.nome}</span>
+            <span className="text-md font-medium">{auth.user.name}</span>
           </SidebarMenuButton>
-          <SidebarMenuButton onClick={() => auth.signOut()}>
+          <SidebarMenuButton onClick={auth.logout}>
             <LogOut />
             <span className="text-md font-medium">Sair</span>
           </SidebarMenuButton>

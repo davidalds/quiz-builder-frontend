@@ -20,7 +20,7 @@ export interface QuizAPI {
 export interface QuizApiWithParams {
   [key: `quizzes/${string}`]: ResponseQuiz
   [key: `quizzes/user-quizzes/${number}`]: ResponseQuiz
-  [key: `results?quizId=${string}&guestId=${string}`]: Result
+  [key: `results?quizId=${string}`]: Result
 }
 
 export interface CategoryAPI {
