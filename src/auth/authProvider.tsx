@@ -81,7 +81,7 @@ export default function AuthProvider({ children }: IProps) {
         }
       }
     }
-  }, [data, isFetching])
+  }, [data, isFetching, isLoggedIn])
 
   useEffect(() => {
     setLogoutHandler(logoutHandler)

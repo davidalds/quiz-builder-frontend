@@ -13,6 +13,6 @@ export const useGuestId = () => {
   return useQuery({
     queryKey: ['guestId'],
     queryFn: () => getGuestId(),
-    enabled: false,
+    refetchOnWindowFocus: false,
   })
 }
