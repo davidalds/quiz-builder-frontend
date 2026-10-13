@@ -1,27 +1,43 @@
-import { useCallback, useEffect, useState, type ReactNode } from 'react'
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from 'react'
 import { AuthContext } from './authContext'
 import type { loginType, userType } from './types'
 import Cookies from 'js-cookie'
 import { api } from '@/services'
 import { useQueryClient } from '@tanstack/react-query'
 import { logout, setLogoutHandler } from './auth-event'
+import { useUser } from '@/hooks/userServiceHooks'
 
 interface IProps {
   children: ReactNode
 }
 
 export default function AuthProvider({ children }: IProps) {
-  const defaultValues: userType = {
-    publicId: '',
-    email: '',
-    name: '',
-  }
+  const { data, isFetching } = useUser()
+
+  const defaultValues = useMemo<userType>(
+    () => ({
+      publicId: '',
+      email: '',
+      name: '',
+    }),
+    [],
+  )
   const queryClient = useQueryClient()
 
+  const [user, setUser] = useState<userType>(
+    Cookies.get('user')
+      ? JSON.parse(Cookies.get('user') as string)
+      : defaultValues,
+  )
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(
     Cookies.get('isLoggedIn') ? true : false,
   )
-  const [user, setUser] = useState<userType>(defaultValues)
 
   const signIn = async ({ email, password }: loginType) => {
     await api.post<{ access_token: string; refresh_token: string }>(
@@ -31,33 +47,45 @@ export default function AuthProvider({ children }: IProps) {
         password,
       },
     )
-    Cookies.set('isLoggedIn', 'true')
+
     setIsLoggedIn(true)
+    Cookies.set('isLoggedIn', 'true')
   }
 
   const logoutHandler = useCallback(() => {
     queryClient.invalidateQueries()
+    setUser(defaultValues)
     setIsLoggedIn(false)
     Cookies.remove('isLoggedIn')
-  }, [queryClient])
+    Cookies.remove('user')
+  }, [queryClient, defaultValues])
 
-  const isAuthenticated = useCallback(async () => {
-    try {
-      const { data: user } = await api.get<userType>('users/user')
-      setUser({
-        publicId: user.publicId,
-        email: user.email,
-        name: user.name,
-      })
-    } catch {
-      logout()
+  useEffect(() => {
+    if (!isFetching) {
+      if (data) {
+        const { publicId, email, name } = data
+        if (!Cookies.get('user')) {
+          setUser({
+            publicId,
+            email,
+            name,
+          })
+          Cookies.set(
+            'user',
+            JSON.stringify({
+              publicId,
+              email,
+              name,
+            }),
+          )
+        }
+      }
     }
-  }, [])
+  }, [data, isFetching])
 
   useEffect(() => {
     setLogoutHandler(logoutHandler)
-    isAuthenticated()
-  }, [logoutHandler, isAuthenticated])
+  }, [logoutHandler])
 
   return (
     <AuthContext.Provider value={{ user, signIn, logout, isLoggedIn }}>

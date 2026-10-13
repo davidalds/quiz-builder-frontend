@@ -8,11 +8,9 @@ import { api } from '@/services'
 import { useQueryClient } from '@tanstack/react-query'
 import DialogComponent from '@/components/ui/dialogComponent'
 import ResultDialog from '../components/ui/resultDialog'
-import { useCookie } from '@/context/useCookie'
 
 function QuizPage() {
   const params = useParams()
-  const { guestId } = useCookie()
   const { data, isError, isLoading, error } = useQuiz(params.id!)
   const { data: dataQuizResult } = useQuizResult(params.id!)
   const queryClient = useQueryClient()
@@ -21,7 +19,6 @@ function QuizPage() {
     try {
       await api.post(`results?quizId=${params.id}`, {
         userAnswers: data,
-        guestId,
       })
 
       queryClient.invalidateQueries({ queryKey: ['quiz_result', params.id] })
